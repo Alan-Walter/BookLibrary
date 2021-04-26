@@ -1,17 +1,42 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inject NavigationManager Url
 
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+<MatAppBarContainer>
+    <MatAppBar Fixed="true">
+        <MatAppBarRow>
+            <MatAppBarSection>
+                <MatIconButton Icon="menu" @onclick="ToggleNavMenu"></MatIconButton>
+                <MatAppBarTitle>E-Book Library</MatAppBarTitle>
+            </MatAppBarSection>
+        </MatAppBarRow>
+    </MatAppBar>
 
-        <div class="content px-4">
-            @Body
-        </div>
-    </div>
-</div>
+    <MatAppBarContent>
+        <MatDrawerContainer>
+            <MatDrawer @bind-Opened="@showDrawer" Mode="@MatDrawerMode.Modal">
+                <MatNavMenu Multi="true">
+                    <MatNavItem Href="@Url.ToAbsoluteUri("").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="home"></MatIcon>Home</MatNavItem>
+                    <MatNavItem Href="@Url.ToAbsoluteUri("CreateBook").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Add Book</MatNavItem>
+                    <MatNavItem Href="@Url.ToAbsoluteUri("CreateAuthor").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Add Author</MatNavItem>
+                </MatNavMenu>
+            </MatDrawer>
+            <MatDrawerContent>
+                <div class="body-wrapper">
+                    @Body
+                </div>
+            </MatDrawerContent>
+        </MatDrawerContainer>
+    </MatAppBarContent>
+</MatAppBarContainer>
+
+@code {
+    private bool showDrawer = false;
+
+    private void ToggleNavMenu()
+    {
+        showDrawer = !showDrawer;
+    }
+}
+
+<MatPortalHost></MatPortalHost>

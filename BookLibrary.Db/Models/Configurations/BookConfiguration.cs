@@ -1,10 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BookLibrary.Db.Models.Configurations
 {
@@ -16,6 +10,9 @@ namespace BookLibrary.Db.Models.Configurations
             builder.Property(i => i.Title)
                 .IsRequired()
                 .HasMaxLength(64);
+
+            builder.Property(i => i.ImageUrl)
+                .HasMaxLength(256);
         }
     }
 }

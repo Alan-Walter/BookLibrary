@@ -1,16 +1,12 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BookLibrary.Db.Models
 {
-    public class Book : IEntity
+    public class Book : Entity
     {
-        public Guid Id { get; set; }
-
         public string Title { get; set; }
+
+        public string ImageUrl { get; set; }
 
         public ICollection<Author> Authors { get; set; }
     }
