@@ -1,6 +1,7 @@
 using BookLibrary.Data;
 using BookLibrary.Db;
 using BookLibrary.Db.Interfaces;
+using BookLibrary.Db.Models;
 using BookLibrary.Db.Repositories;
 
 using MatBlazor;
@@ -32,6 +33,9 @@ namespace BookLibrary
             services.AddSingleton<WeatherForecastService>();
             services.AddMatBlazor();
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddScoped<IBookRepository, BookRepository>();
         }
@@ -55,8 +59,12 @@ namespace BookLibrary
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

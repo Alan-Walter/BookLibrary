@@ -1,10 +1,13 @@
 ﻿using BookLibrary.Db.Models;
 
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
+using System;
 
 namespace BookLibrary.Db
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext<User, Role, Guid>
     {
         public DbSet<Author> Authors { get; set; }
 
@@ -17,6 +20,7 @@ namespace BookLibrary.Db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         }
     }
