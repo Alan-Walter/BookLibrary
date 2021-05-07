@@ -33,9 +33,10 @@ namespace BookLibrary
             services.AddSingleton<WeatherForecastService>();
             services.AddMatBlazor();
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<IBookRepository, BookRepository>();
         }

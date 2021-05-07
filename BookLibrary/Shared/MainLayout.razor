@@ -9,6 +9,10 @@
                 <MatIconButton Icon="menu" @onclick="ToggleNavMenu"></MatIconButton>
                 <MatAppBarTitle>E-Book Library</MatAppBarTitle>
             </MatAppBarSection>
+            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                <MatIconButton Icon="account_circle" @onclick="LogOut">
+                </MatIconButton>
+            </MatAppBarSection>
         </MatAppBarRow>
     </MatAppBar>
 
@@ -36,6 +40,11 @@
     private void ToggleNavMenu()
     {
         showDrawer = !showDrawer;
+    }
+
+    private void LogOut()
+    {
+        Url.NavigateTo("Identity/Account/Logout", true);
     }
 }
 
