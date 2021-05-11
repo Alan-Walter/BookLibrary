@@ -1,8 +1,5 @@
 ﻿@page "/"
 
-<div>
-</div>
+@attribute [Authorize]
 
-<div>
-    <MatPaginator Length="100" PageSize="15"></MatPaginator>
-</div>
+<BookLibrary.Pages.Books.List/>

@@ -1,0 +1,42 @@
+﻿@using BookLibrary.Data.Models;
+@using BookLibrary.Db.Interfaces;
+
+@page "/Authors/Create"
+
+@inject IAuthorRepository repository
+@inject NavigationManager nagivation
+
+<MatH3>Create Author</MatH3>
+
+<MatPaper Elevation="5" Class="padding-16">
+    <EditForm Model="authorModel" OnValidSubmit="Success">
+        <DataAnnotationsValidator />
+        <p>
+            <MatTextField Label="First Name" @bind-Value="authorModel.FirstName" FullWidth="true"/>
+        </p>
+        <p>
+            <MatTextField Label="Last Name" @bind-Value="authorModel.LastName" FullWidth="true"/>
+        </p>
+        <MatButton Type="submit" Raised="true">Create</MatButton>
+    </EditForm>
+</MatPaper>
+
+@code {
+    AuthorModel authorModel = new AuthorModel();
+    string error = string.Empty;
+
+    private async Task Success(EditContext editContext)
+    {
+        if (editContext.Validate())
+        {
+            var author = new Author
+            {
+                FirstName = authorModel.FirstName,
+                LastName = authorModel.LastName
+            };
+            await repository.AddAsync(author);
+
+            nagivation.NavigateTo("/Authors/List");
+        }
+    }
+}

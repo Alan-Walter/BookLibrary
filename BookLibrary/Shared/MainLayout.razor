@@ -21,12 +21,12 @@
             <MatDrawer @bind-Opened="@showDrawer" Mode="@MatDrawerMode.Modal">
                 <MatNavMenu Multi="true">
                     <MatNavItem Href="@Url.ToAbsoluteUri("").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="home"></MatIcon>Home</MatNavItem>
-                    <MatNavItem Href="@Url.ToAbsoluteUri("CreateBook").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Add Book</MatNavItem>
-                    <MatNavItem Href="@Url.ToAbsoluteUri("CreateAuthor").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Add Author</MatNavItem>
+                    <MatNavItem Href="@Url.ToAbsoluteUri("/Books/List").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Books</MatNavItem>
+                    <MatNavItem Href="@Url.ToAbsoluteUri("/Authors/List").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Authors</MatNavItem>
                 </MatNavMenu>
             </MatDrawer>
             <MatDrawerContent>
-                <div class="body-wrapper">
+                <div class="container padding-24">
                     @Body
                 </div>
             </MatDrawerContent>
