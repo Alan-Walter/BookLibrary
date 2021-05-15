@@ -56,3 +56,15 @@ a, .btn-link {
 .padding-16 {
     padding: 16px;
 }
+
+.padding-top-16 {
+    padding-top: 16px;
+}
+
+.padding-0 {
+    padding: 0;
+}
+
+.mat-layout-grid.padding-0 {
+    padding: 0;
+}

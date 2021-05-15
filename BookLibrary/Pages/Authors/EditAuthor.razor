@@ -1,0 +1,70 @@
+﻿@using BookLibrary.Data.Models;
+@using BookLibrary.Db.Interfaces;
+
+@page "/Authors/Edit/{Id:guid}"
+
+@inject IAuthorRepository repository
+@inject NavigationManager nagivation
+
+<MatH3>Edit Author</MatH3>
+
+@if (!initialized)
+{
+    <MatProgressBar Indeterminate="true"></MatProgressBar>
+}
+else
+{
+    if (author == null)
+    {
+        <EntityNotFound EntityType="@typeof(Author)" Id="@Id"/>
+    }
+    else
+    {
+        <MatPaper Elevation="5" Class="padding-16">
+            <EditForm Model="authorModel" OnValidSubmit="Success">
+                <DataAnnotationsValidator />
+                <p>
+                    <MatTextField Label="First Name" @bind-Value="authorModel.FirstName" FullWidth="true" />
+                </p>
+                <p>
+                    <MatTextField Label="Middle Name" @bind-Value="authorModel.MiddleName" FullWidth="true" />
+                </p>
+                <p>
+                    <MatTextField Label="Last Name" @bind-Value="authorModel.LastName" FullWidth="true" />
+                </p>
+                <MatButton Type="submit" Raised="true">Save Changes</MatButton>
+            </EditForm>
+        </MatPaper>
+    }
+}
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    AuthorModel authorModel = new AuthorModel();
+    Author author = null;
+    bool initialized = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        author = await repository.GetByIdAsync(Id);
+        if (author != null)
+        {
+            authorModel = new AuthorModel(author);
+        }
+        initialized = true;
+    }
+
+    private async Task Success(EditContext editContext)
+    {
+        if (editContext.Validate() && author != null)
+        {
+            author.FirstName = authorModel.FirstName;
+            author.MiddleName = authorModel.MiddleName;
+            author.LastName = authorModel.LastName;
+            await repository.UpdateAsync(author);
+
+            nagivation.NavigateTo("/Authors/List");
+        }
+    }
+}

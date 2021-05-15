@@ -1,7 +1,90 @@
 ﻿@using BookLibrary.Data.Models;
 @using BookLibrary.Db.Interfaces;
+@using BookLibrary.Core.Specifications;
 
 @page "/Authors/List"
 
 @inject IAuthorRepository repository
 
+<MatH3>Authors</MatH3>
+<MatButtonLink Href="/Authors/Create" Raised="true" Icon="add">Create Author</MatButtonLink>
+<div class="padding-top-16">
+    @if (authors == null)
+    {
+        <MatH5>Loading data</MatH5>
+        <MatProgressBar Indeterminate="true"></MatProgressBar>
+    }
+    else if (authors.Count == 0)
+    {
+        <MatH5>No data</MatH5>
+    }
+    else
+    {
+        <div class="mat-layout-grid padding-0">
+            <div class="mat-layout-grid-inner">
+                @foreach (var author in authors)
+                {
+                    <div class="mat-layout-grid-cell">
+                        <MatCard>
+                            <MatCardContent Class="padding-16">
+                                <MatH6>
+                                    @author.ToString()
+                                </MatH6>
+                            </MatCardContent>
+                            <MatCardActions>
+                                <MatCardActionButtons>
+                                    <MatButton>Books</MatButton>
+                                </MatCardActionButtons>
+
+                                <MatCardActionIcons>
+                                    @*<MatIconButton Icon="@MatIconNames.Favorite"></MatIconButton>*@
+                                    <MatIconButton Icon="@MatIconNames.Edit" Link="@($"/Authors/Edit/{author.Id}")"></MatIconButton>
+                                    <MatIconButton Icon="@MatIconNames.Delete" OnClick="@(async (_) => await DeleteAuthor(author.Id))"></MatIconButton>
+                                </MatCardActionIcons>
+                            </MatCardActions>
+                        </MatCard>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="padding-top-16">
+            <MatPaginator Length="@count" PageSize="@pageSize" Page="@OnPage" ></MatPaginator>
+        </div>
+    }
+</div>
+
+@code{
+    List<AuthorModel> authors = null;
+    int pageSize = 10;
+    int pageIndex = 0;
+    int count = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAuthors();
+        count = await repository.CountAsync(new AuthorListCountSpecification());
+    }
+
+    private async Task OnPage(MatPaginatorPageEvent e)
+    {
+        pageSize = e.PageSize;
+        pageIndex = e.PageIndex;
+        await LoadAuthors();
+    }
+
+    private async Task LoadAuthors()
+    {
+        var specification = new AuthorListSpecification(pageSize, pageIndex);
+        var authorEntities = await repository.ListAsync(specification);
+        authors = authorEntities.Select(i => new AuthorModel(i)).ToList();
+    }
+
+    private async Task DeleteAuthor(Guid id)
+    {
+        var entity = await repository.GetByIdAsync(id);
+        await repository.DeleteAsync(entity);
+        var entityModel = authors.FirstOrDefault(i => i.Id == entity.Id);
+        authors.Remove(entityModel);
+    }
+
+}

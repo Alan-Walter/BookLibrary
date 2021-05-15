@@ -9,11 +9,14 @@ namespace BookLibrary.Db.Models.Configurations
             base.Configure(builder);
             builder.Property(i => i.FirstName)
                 .IsRequired(true)
-                .HasMaxLength(64);
+                .HasMaxLength(255);
+
+            builder.Property(i => i.MiddleName)
+                .HasMaxLength(255);
 
             builder.Property(i => i.LastName)
                 .IsRequired(true)
-                .HasMaxLength(64);
+                .HasMaxLength(255);
         }
     }
 }

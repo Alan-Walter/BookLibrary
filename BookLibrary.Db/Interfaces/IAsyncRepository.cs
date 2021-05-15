@@ -2,6 +2,7 @@
 
 using BookLibrary.Db.Models;
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace BookLibrary.Db.Interfaces
 {
     public interface IAsyncRepository<T> where T : IEntity
     {
-        Task<T> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken = default);
 

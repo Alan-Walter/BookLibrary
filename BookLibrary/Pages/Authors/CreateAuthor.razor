@@ -12,10 +12,13 @@
     <EditForm Model="authorModel" OnValidSubmit="Success">
         <DataAnnotationsValidator />
         <p>
-            <MatTextField Label="First Name" @bind-Value="authorModel.FirstName" FullWidth="true"/>
+            <MatTextField Label="First Name" @bind-Value="authorModel.FirstName" FullWidth="true" />
         </p>
         <p>
-            <MatTextField Label="Last Name" @bind-Value="authorModel.LastName" FullWidth="true"/>
+            <MatTextField Label="Middle Name" @bind-Value="authorModel.MiddleName" FullWidth="true" />
+        </p>
+        <p>
+            <MatTextField Label="Last Name" @bind-Value="authorModel.LastName" FullWidth="true" />
         </p>
         <MatButton Type="submit" Raised="true">Create</MatButton>
     </EditForm>
@@ -23,7 +26,6 @@
 
 @code {
     AuthorModel authorModel = new AuthorModel();
-    string error = string.Empty;
 
     private async Task Success(EditContext editContext)
     {
@@ -32,6 +34,7 @@
             var author = new Author
             {
                 FirstName = authorModel.FirstName,
+                MiddleName = authorModel.MiddleName,
                 LastName = authorModel.LastName
             };
             await repository.AddAsync(author);
