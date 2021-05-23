@@ -1,5 +1,54 @@
-﻿@page "/Books/Create"
+﻿@using BookLibrary.Data.Models;
+@using BookLibrary.Db.Interfaces;
+@using BookLibrary.Components;
+
+@page "/Books/Create"
+
+@inject IBookRepository repository
+@inject IAuthorRepository authorRepository
+@inject NavigationManager nagivation
+
+<MatH3>Create Book</MatH3>
+
+<MatPaper Elevation="5" Class="padding-16">
+    <EditForm Model="model" OnValidSubmit="Success">
+        <DataAnnotationsValidator />
+        <p>
+            <MatTextField Label="Title" @bind-Value="model.Title" FullWidth="true" />
+        </p>
+        <p>
+            <MatTextField Label="Image URL" @bind-Value="model.ImageUrl" FullWidth="true" />
+        </p>
+        <p>
+            <MultiAutocomplete TItem="AuthorModel" Items="authors" @bind-Value="model.Authors" Label="Authors" FullWidth="true" />
+        </p>
+        <MatButton Type="submit" Raised="true">Create</MatButton>
+    </EditForm>
+</MatPaper>
 
 @code {
-    
+    BookModel model = new BookModel();
+    List<AuthorModel> authors = new List<AuthorModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authorEntities = await authorRepository.ListAllAsync();
+        authors.AddRange(authorEntities.Select(i => new AuthorModel(i)));
+    }
+
+    private async Task Success(EditContext editContext)
+    {
+        if (editContext.Validate())
+        {
+            var author = new Book
+            {
+                Title = model.Title,
+                ImageUrl = model.ImageUrl,
+                Authors = model.Authors.Select(i => i.Entity).ToList()
+        };
+        await repository.AddAsync(author);
+
+        nagivation.NavigateTo("/Books/List");
+    }
+}
 }

@@ -1,4 +1,3 @@
-using BookLibrary.Data;
 using BookLibrary.Db;
 using BookLibrary.Db.Interfaces;
 using BookLibrary.Db.Models;
@@ -30,7 +29,6 @@ namespace BookLibrary
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddMatBlazor();
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<User, Role>()

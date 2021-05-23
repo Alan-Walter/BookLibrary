@@ -1,6 +1,13 @@
-﻿@page "/Books/List"
+﻿@using BookLibrary.Data.Models;
+@using BookLibrary.Db.Interfaces;
+@using BookLibrary.Core.Specifications;
 
-s
+@page "/Books/List"
+
+@inject IBookRepository repository
+
+<MatH3>Books</MatH3>
+<MatButtonLink Href="/Books/Create" Raised="true" Icon="add">Add book</MatButtonLink>
 
 @code{
 
