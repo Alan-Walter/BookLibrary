@@ -47,6 +47,15 @@ namespace BookLibrary.Components
             return searchResult.ListResult;
         }
 
+        protected IEnumerable<MatAutocompleteListItem<TItem>> GetAutocompleteItems()
+        {
+            return Value.Select(i => new MatAutocompleteListItem<TItem>
+            {
+                StringValue = ComputeStringValue(i),
+                Item = i
+            });
+        }
+
         protected bool IsShowingClearButton
         {
             get => ShowClearButton && !string.IsNullOrEmpty(this.StringValue);
@@ -238,6 +247,16 @@ namespace BookLibrary.Components
             }
 
             Value.Add(selectedObject);
+            StateHasChanged();
+        }
+
+        public void ItemRemoved(TItem item)
+        {
+            if (!Value.Contains(item))
+            {
+                return;
+            }
+            Value.Remove(item);
             StateHasChanged();
         }
 

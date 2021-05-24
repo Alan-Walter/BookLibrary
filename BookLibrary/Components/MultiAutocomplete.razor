@@ -42,4 +42,12 @@
             </MatList>
         </div>
     }
+    <div class="multi-autocomplete-selected-values">
+        <MatChipSet>
+            @foreach (var elementWrapper in GetAutocompleteItems())
+            {
+                <MatChip class="mt-1" Label="@elementWrapper.StringValue" TrailingIcon="clear" TrailingIconClick="@(e => ItemRemoved(elementWrapper.Item))"></MatChip>
+            }
+        </MatChipSet>
+    </div>
 </div>

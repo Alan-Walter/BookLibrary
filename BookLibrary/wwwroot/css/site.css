@@ -68,3 +68,7 @@ a, .btn-link {
 .mat-layout-grid.padding-0 {
     padding: 0;
 }
+
+.mdc-drawer-app-content .mdc-drawer-app-content.mat-drawer-app-content {
+    overflow: inherit;
+}
