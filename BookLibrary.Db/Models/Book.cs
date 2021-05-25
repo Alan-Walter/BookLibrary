@@ -9,5 +9,7 @@ namespace BookLibrary.Db.Models
         public string ImageUrl { get; set; }
 
         public ICollection<Author> Authors { get; set; }
+
+        public ICollection<BinaryFile> Files { get; set; } 
     }
 }

@@ -1,12 +1,15 @@
 ﻿@using BookLibrary.Data.Models;
 @using BookLibrary.Db.Interfaces;
 @using BookLibrary.Components;
+@using BookLibrary.Core.Services;
 
 @page "/Books/Create"
 
 @inject IBookRepository repository
 @inject IAuthorRepository authorRepository
 @inject NavigationManager nagivation
+@inject IFileService fileService
+@inject IMatToaster toaster
 
 <MatH3>Create Book</MatH3>
 
@@ -21,7 +24,18 @@
         </p>
         <p>
             <MultiAutocomplete TItem="AuthorModel" Items="authors" @bind-Value="model.Authors" Label="Authors" FullWidth="true" />
+            <ValidationMessage For="@(() => model.Authors)" />
         </p>
+        <p>
+            <MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse"></MatFileUpload>
+            <MatChipSet>
+                @foreach (var file in model.Files)
+                {
+                    <MatChip class="mt-1" Label=@file.FileName TrailingIcon="clear" TrailingIconClick="@(_ => RemoveFile(file))"></MatChip>
+                }
+            </MatChipSet>
+        </p>
+
         <MatButton Type="submit" Raised="true">Create</MatButton>
     </EditForm>
 </MatPaper>
@@ -38,17 +52,46 @@
 
     private async Task Success(EditContext editContext)
     {
-        if (editContext.Validate() && model.Authors.Count > 0)
+        if (editContext.Validate())
         {
             var author = new Book
             {
                 Title = model.Title,
                 ImageUrl = model.ImageUrl,
                 Authors = model.Authors.Select(i => i.Entity).ToList()
-        };
-        await repository.AddAsync(author);
+            };
+            await repository.AddAsync(author);
 
-        nagivation.NavigateTo("/Books/List");
+            nagivation.NavigateTo("/Books/List");
+        }
     }
-}
+
+    private async Task MultipleFilesReady(IMatFileUploadEntry[] files)
+    {
+        foreach (var file in files)
+        {
+            if (file.Size > fileService.MaxFileSize || !fileService.CanSave(file.Name, file.Type))
+            {
+                toaster.Add($"File {file.Name} cannot be loaded", MatToastType.Danger);
+                continue;
+            }
+
+            var (stream, path) = fileService.GetTemporaryFileStream();
+            using (stream)
+            {
+                await file.WriteToStreamAsync(stream);
+                model.Files.Add(new FileModel
+                {
+                    FileName = file.Name,
+                    FileType = file.Type,
+                    TemporaryFilePath = path
+                });
+            }
+        }
+    }
+
+    private void RemoveFile(FileModel fileModel)
+    {
+        model.Files.Remove(fileModel);
+    }
 }

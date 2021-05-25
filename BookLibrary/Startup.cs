@@ -1,3 +1,4 @@
+using BookLibrary.Core.Services;
 using BookLibrary.Db;
 using BookLibrary.Db.Interfaces;
 using BookLibrary.Db.Models;
@@ -30,6 +31,16 @@ namespace BookLibrary
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddMatBlazor();
+            services.AddMatToaster(config =>
+            {
+                config.Position = MatToastPosition.TopRight;
+                config.PreventDuplicates = true;
+                config.NewestOnTop = true;
+                config.ShowCloseButton = true;
+                config.MaximumOpacity = 95;
+                config.VisibleStateDuration = 3000;
+            });
+
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();
@@ -38,6 +49,7 @@ namespace BookLibrary
 
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IFileService, LocalFileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

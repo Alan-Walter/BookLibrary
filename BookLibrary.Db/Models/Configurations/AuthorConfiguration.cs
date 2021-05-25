@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using System;
+
 namespace BookLibrary.Db.Models.Configurations
 {
     public class AuthorConfiguration : EntityConfiguration<Author>
@@ -17,6 +19,13 @@ namespace BookLibrary.Db.Models.Configurations
             builder.Property(i => i.LastName)
                 .IsRequired(true)
                 .HasMaxLength(255);
+
+            builder.HasData(new Author
+            {
+                Id = Guid.Parse("{A0A4703E-05C2-451C-AD8F-9A00963A3998}"),
+                FirstName = "Folk",
+                LastName = "Art"
+            });
         }
     }
 }
