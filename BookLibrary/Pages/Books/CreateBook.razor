@@ -2,6 +2,7 @@
 @using BookLibrary.Db.Interfaces;
 @using BookLibrary.Components;
 @using BookLibrary.Core.Services;
+@using BookLibrary.Core.Specifications; 
 
 @page "/Books/Create"
 
@@ -9,6 +10,7 @@
 @inject IAuthorRepository authorRepository
 @inject NavigationManager nagivation
 @inject IFileService fileService
+@inject ITemporaryFileService tempFileService;
 @inject IMatToaster toaster
 
 <MatH3>Create Book</MatH3>
@@ -22,19 +24,34 @@
         <p>
             <MatTextField Label="Image URL" @bind-Value="model.ImageUrl" FullWidth="true" />
         </p>
-        <p>
-            <MultiAutocomplete TItem="AuthorModel" Items="authors" @bind-Value="model.Authors" Label="Authors" FullWidth="true" />
-            <ValidationMessage For="@(() => model.Authors)" />
-        </p>
-        <p>
-            <MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse"></MatFileUpload>
-            <MatChipSet>
-                @foreach (var file in model.Files)
-                {
-                    <MatChip class="mt-1" Label=@file.FileName TrailingIcon="clear" TrailingIconClick="@(_ => RemoveFile(file))"></MatChip>
-                }
-            </MatChipSet>
-        </p>
+        @if (model.Parent == null)
+        {
+            <p>
+                <MatSlideToggle @bind-Value="@model.IsGroup" Label="Is group"></MatSlideToggle>
+            </p>
+        }
+        @if (model.IsGroup || model.Parent == null)
+        {
+            <p>
+                <MultiAutocomplete TItem="AuthorModel" Items="authors" @bind-Value="model.Authors" Label="Authors" FullWidth="true" />
+                <ValidationMessage For="@(() => model.Authors)" />
+            </p>
+        }
+        @if (!model.IsGroup)
+        {
+            <p>
+                <MatAutocompleteList Items="@bookGroups" @bind-Value="@model.Parent" Label="Parent book" FullWidth="true" ShowClearButton="true" CustomStringSelector="@(i => i.Title)"/>
+            </p>
+            <p>
+                <MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse"></MatFileUpload>
+                <MatChipSet>
+                    @foreach (var file in model.Files)
+                    {
+                        <MatChip class="mt-1" Label=@file.FileName TrailingIcon="clear" TrailingIconClick="@(_ => RemoveFile(file))"></MatChip>
+                    }
+                </MatChipSet>
+            </p>
+        }
 
         <MatButton Type="submit" Raised="true">Create</MatButton>
     </EditForm>
@@ -43,11 +60,15 @@
 @code {
     BookModel model = new BookModel();
     List<AuthorModel> authors = new List<AuthorModel>();
+    List<BookModel> bookGroups = new List<BookModel>();
 
     protected override async Task OnInitializedAsync()
     {
         var authorEntities = await authorRepository.ListAllAsync();
         authors.AddRange(authorEntities.Select(i => new AuthorModel(i)));
+
+        var groups = await repository.ListAsync(new BookGroupsSpecification());
+        bookGroups.AddRange(groups.Select(i => new BookModel(i)));
     }
 
     private async Task Success(EditContext editContext)
@@ -58,7 +79,10 @@
             {
                 Title = model.Title,
                 ImageUrl = model.ImageUrl,
-                Authors = model.Authors.Select(i => i.Entity).ToList()
+                Authors = model.Authors.Select(i => i.Entity).ToList(),
+                IsGroup = model.IsGroup,
+                Parent = model.Parent?.Entity,
+                Description = model.Description
             };
             await repository.AddAsync(author);
 
@@ -76,17 +100,13 @@
                 continue;
             }
 
-            var (stream, path) = fileService.GetTemporaryFileStream();
-            using (stream)
+            var path = await tempFileService.SaveFile(file.WriteToStreamAsync);
+            model.Files.Add(new FileModel
             {
-                await file.WriteToStreamAsync(stream);
-                model.Files.Add(new FileModel
-                {
-                    FileName = file.Name,
-                    FileType = file.Type,
-                    TemporaryFilePath = path
-                });
-            }
+                FileName = file.Name,
+                FileType = file.Type,
+                TemporaryFilePath = path
+            });
         }
     }
 

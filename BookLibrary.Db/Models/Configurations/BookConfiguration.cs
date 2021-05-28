@@ -11,8 +11,14 @@ namespace BookLibrary.Db.Models.Configurations
                 .IsRequired()
                 .HasMaxLength(64);
 
+            builder.Property(i => i.Description)
+                .HasMaxLength(512);
+
             builder.Property(i => i.ImageUrl)
                 .HasMaxLength(256);
+
+            builder.HasMany(i => i.Childs)
+                .WithOne(i => i.Parent);
         }
     }
 }

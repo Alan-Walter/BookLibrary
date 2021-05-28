@@ -15,25 +15,42 @@ namespace BookLibrary.Data.Models
         [DataType(DataType.ImageUrl)]
         public string ImageUrl { get; set; }
 
-        [Required]
+        [MaxLength(512)]
+        public string Description { get; set; }
+
         [CustomValidation(typeof(BookModel), nameof(ValidateAuthors))]
         public ICollection<AuthorModel> Authors { get; set; } = new List<AuthorModel>();
 
-        [Required]
         [CustomValidation(typeof(BookModel), nameof(ValidateFiles))]
         public ICollection<FileModel> Files { get; set; } = new List<FileModel>();
+
+        public bool IsGroup { get; set; }
+
+        public BookModel Parent { get; set; }
+
+        public BookModel() : base()
+        {
+
+        }
+
+        public BookModel(Book book) : base(book)
+        {
+            Title = book.Title;
+            Description = book.Description;
+            ImageUrl = book.ImageUrl;
+        }
 
 
         public static ValidationResult ValidateAuthors(ICollection<AuthorModel> authors, ValidationContext vc)
         {
-            return authors.Count > 0
+            return authors.Count > 0 || vc.ObjectInstance is BookModel model && model.Parent != null
                 ? ValidationResult.Success
                 : new ValidationResult("Authors cannot be empty", new[] { vc.MemberName });
         }
 
         public static ValidationResult ValidateFiles(ICollection<FileModel> files, ValidationContext vc)
         {
-            return files.Count > 0
+            return files.Count > 0 || vc.ObjectInstance is BookModel model && model.IsGroup
                 ? ValidationResult.Success
                 : new ValidationResult("Files cannot be empty", new[] { vc.MemberName });
         }

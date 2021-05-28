@@ -20,11 +20,5 @@ namespace BookLibrary.Core.Services
             var fileExt = Path.GetExtension(fileName);
             return allowedFiles.TryGetValue(fileExt, out var mimeType) && mimeType == type;
         }
-
-        public (Stream, string) GetTemporaryFileStream()
-        {
-            var path = Path.GetTempFileName();
-            return (File.OpenWrite(path), path);
-        }
     }
 }
