@@ -9,6 +9,17 @@ namespace BookLibrary.Data.Models
 {
     public class FileModel : BaseModel<BinaryFile>
     {
+        public FileModel()
+        {
+
+        }
+
+        public FileModel(BinaryFile binaryFile) : base(binaryFile)
+        {
+            FileName = binaryFile.FileName;
+            FileType = binaryFile.FileType;
+        }
+
         public string TemporaryFilePath { get; set; }
 
         public string FileName { get; set; }

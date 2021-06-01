@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace BookLibrary.Data.Models
 {
@@ -38,6 +39,10 @@ namespace BookLibrary.Data.Models
             Title = book.Title;
             Description = book.Description;
             ImageUrl = book.ImageUrl;
+            Authors = book.Authors.Select(i => new AuthorModel(i)).ToList();
+            IsGroup = book.IsGroup;
+            Files = book.Files.Select(i => new FileModel(i)).ToList();
+            Parent = new BookModel(book.Parent);
         }
 
 

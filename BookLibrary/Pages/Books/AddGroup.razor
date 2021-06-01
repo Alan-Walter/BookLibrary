@@ -1,0 +1,61 @@
+﻿@using BookLibrary.Data.Models;
+@using BookLibrary.Db.Interfaces;
+@using BookLibrary.Components;
+@page "/Books/AddGroup"
+
+@inject IBookRepository repository
+@inject IAuthorRepository authorRepository
+@inject NavigationManager nagivation
+
+<EntityForm Title="Add Group">
+    <EditForm Model="model" OnValidSubmit="Success">
+        <DataAnnotationsValidator />
+        <p>
+            <MatTextField Label="Title" @bind-Value="model.Title" FullWidth="true" />
+        </p>
+        <p>
+            <MatTextField Label="Image URL" @bind-Value="model.ImageUrl" FullWidth="true" />
+        </p>
+        <p>
+            <MatTextField Label="Description" @bind-Value="model.Description" FullWidth="true" />
+        </p>
+        <p>
+            <MultiAutocomplete TItem="AuthorModel" Items="authors" @bind-Value="model.Authors" Label="Authors" FullWidth="true" />
+            <ValidationMessage For="@(() => model.Authors)" />
+        </p>
+
+        <MatButton Type="submit" Raised="true">Create</MatButton>
+    </EditForm>
+</EntityForm>
+
+@code {
+    BookModel model = new BookModel()
+    {
+        IsGroup = true
+    };
+    List<AuthorModel> authors = new List<AuthorModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authorEntities = await authorRepository.ListAllAsync();
+        authors.AddRange(authorEntities.Select(i => new AuthorModel(i)));
+    }
+
+    private async Task Success(EditContext editContext)
+    {
+        if (editContext.Validate())
+        {
+            var author = new Book
+            {
+                Title = model.Title,
+                ImageUrl = model.ImageUrl,
+                Authors = model.Authors.Select(i => i.Entity).ToList(),
+                Description = model.Description,
+                IsGroup = true
+            };
+            await repository.AddAsync(author);
+
+            nagivation.NavigateTo("/Books/List");
+        }
+    }
+}

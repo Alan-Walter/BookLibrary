@@ -1,0 +1,14 @@
+﻿<div class="padding-bottom-24">
+    <MatH4>@Title</MatH4>
+</div>
+<MatPaper Elevation="5" Class="padding-24">
+    @ChildContent
+</MatPaper>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

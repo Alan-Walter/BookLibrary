@@ -4,22 +4,28 @@
 @using BookLibrary.Core.Services;
 @using BookLibrary.Core.Specifications; 
 
-@page "/Books/Create"
+@page "/Books/Add"
 
 @inject IBookRepository repository
 @inject IAuthorRepository authorRepository
+@inject IBinaryFileRepository binaryFileRepository
+
 @inject NavigationManager nagivation
 @inject IFileService fileService
-@inject ITemporaryFileService tempFileService;
+@inject ITemporaryFileService tempFileService
 @inject IMatToaster toaster
 
-<MatH3>Create Book</MatH3>
-
-<MatPaper Elevation="5" Class="padding-16">
+<EntityForm Title="Add book">
     <EditForm Model="model" OnValidSubmit="Success">
         <DataAnnotationsValidator />
         <p>
             <MatTextField Label="Title" @bind-Value="model.Title" FullWidth="true" />
+        </p>
+        <p>
+            <MatTextField Label="Description" @bind-Value="model.Description" FullWidth="true" />
+        </p>
+        <p>
+            <MatAutocompleteList Items="@bookGroups" @bind-Value="@model.Parent" Label="Group" FullWidth="true" ShowClearButton="true" CustomStringSelector="@(i => i.Title)" />
         </p>
         <p>
             <MatTextField Label="Image URL" @bind-Value="model.ImageUrl" FullWidth="true" />
@@ -27,35 +33,23 @@
         @if (model.Parent == null)
         {
             <p>
-                <MatSlideToggle @bind-Value="@model.IsGroup" Label="Is group"></MatSlideToggle>
-            </p>
-        }
-        @if (model.IsGroup || model.Parent == null)
-        {
-            <p>
                 <MultiAutocomplete TItem="AuthorModel" Items="authors" @bind-Value="model.Authors" Label="Authors" FullWidth="true" />
                 <ValidationMessage For="@(() => model.Authors)" />
             </p>
         }
-        @if (!model.IsGroup)
-        {
-            <p>
-                <MatAutocompleteList Items="@bookGroups" @bind-Value="@model.Parent" Label="Parent book" FullWidth="true" ShowClearButton="true" CustomStringSelector="@(i => i.Title)"/>
-            </p>
-            <p>
-                <MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse"></MatFileUpload>
-                <MatChipSet>
-                    @foreach (var file in model.Files)
-                    {
-                        <MatChip class="mt-1" Label=@file.FileName TrailingIcon="clear" TrailingIconClick="@(_ => RemoveFile(file))"></MatChip>
-                    }
-                </MatChipSet>
-            </p>
-        }
+        <p>
+            <MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse"></MatFileUpload>
+            <MatChipSet>
+                @foreach (var file in model.Files)
+                {
+                    <MatChip class="mt-1" Label=@file.FileName TrailingIcon="clear" TrailingIconClick="@(_ => RemoveFile(file))"></MatChip>
+                }
+            </MatChipSet>
+        </p>
 
         <MatButton Type="submit" Raised="true">Create</MatButton>
     </EditForm>
-</MatPaper>
+</EntityForm>
 
 @code {
     BookModel model = new BookModel();
@@ -75,16 +69,31 @@
     {
         if (editContext.Validate())
         {
-            var author = new Book
+            var files = new List<BinaryFile>();
+            foreach (var file in model.Files)
+            {
+                var path = fileService.SaveFile(file.TemporaryFilePath, file.FileName);
+                var entity = new BinaryFile
+                {
+                    FileName = file.FileName,
+                    FilePath = path,
+                    FileType = file.FileType
+                };
+                await binaryFileRepository.AddAsync(entity);
+                files.Add(entity);
+            }
+
+            var book = new Book
             {
                 Title = model.Title,
                 ImageUrl = model.ImageUrl,
+                Description = model.Description,
                 Authors = model.Authors.Select(i => i.Entity).ToList(),
                 IsGroup = model.IsGroup,
                 Parent = model.Parent?.Entity,
-                Description = model.Description
+                Files = files
             };
-            await repository.AddAsync(author);
+            await repository.AddAsync(book);
 
             nagivation.NavigateTo("/Books/List");
         }

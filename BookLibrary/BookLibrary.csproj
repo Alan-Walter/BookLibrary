@@ -24,8 +24,4 @@
     <ProjectReference Include="..\BookLibrary.Db\BookLibrary.Db.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Shared\Entities\" />
-  </ItemGroup>
-
 </Project>

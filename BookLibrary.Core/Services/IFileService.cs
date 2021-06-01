@@ -8,5 +8,7 @@ namespace BookLibrary.Core.Services
         long MaxFileSize { get; }
 
         bool CanSave(string fileName, string type);
+
+        string SaveFile(string tempFileName, string fileName);
     }
 }

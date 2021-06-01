@@ -1,4 +1,5 @@
 using BookLibrary.Core.Services;
+using BookLibrary.Data.Services;
 using BookLibrary.Db;
 using BookLibrary.Db.Interfaces;
 using BookLibrary.Db.Models;
@@ -49,6 +50,8 @@ namespace BookLibrary
 
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IBinaryFileRepository, BinaryFileRepository>();
+
             services.AddScoped<IFileService, LocalFileService>();
             services.AddScoped<ITemporaryFileService, TemporaryFileService>();
         }
