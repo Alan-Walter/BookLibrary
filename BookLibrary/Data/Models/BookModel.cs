@@ -1,12 +1,9 @@
-﻿using BookLibrary.Db.Models;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace BookLibrary.Data.Models
 {
-    public class BookModel : BaseModel<Book>
+    public class BookModel : BaseModel
     {
         [Required]
         [MaxLength(255)]
@@ -20,31 +17,14 @@ namespace BookLibrary.Data.Models
         public string Description { get; set; }
 
         [CustomValidation(typeof(BookModel), nameof(ValidateAuthors))]
-        public ICollection<AuthorModel> Authors { get; set; } = new List<AuthorModel>();
+        public ICollection<AuthorModel> Authors { get; set; }
 
         [CustomValidation(typeof(BookModel), nameof(ValidateFiles))]
-        public ICollection<FileModel> Files { get; set; } = new List<FileModel>();
+        public ICollection<FileModel> Files { get; set; }
 
         public bool IsGroup { get; set; }
 
         public BookModel Parent { get; set; }
-
-        public BookModel() : base()
-        {
-
-        }
-
-        public BookModel(Book book) : base(book)
-        {
-            Title = book.Title;
-            Description = book.Description;
-            ImageUrl = book.ImageUrl;
-            Authors = book.Authors.Select(i => new AuthorModel(i)).ToList();
-            IsGroup = book.IsGroup;
-            Files = book.Files.Select(i => new FileModel(i)).ToList();
-            Parent = new BookModel(book.Parent);
-        }
-
 
         public static ValidationResult ValidateAuthors(ICollection<AuthorModel> authors, ValidationContext vc)
         {

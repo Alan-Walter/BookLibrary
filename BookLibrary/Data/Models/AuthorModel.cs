@@ -1,23 +1,9 @@
-﻿using BookLibrary.Db.Models;
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BookLibrary.Data.Models
 {
-    public class AuthorModel : BaseModel<Author>
+    public class AuthorModel : BaseModel
     {
-        public AuthorModel(Author entity) : base(entity)
-        {
-            FirstName = entity.FirstName;
-            MiddleName = entity.MiddleName;
-            LastName = entity.LastName;
-        }
-
-        public AuthorModel()
-        {
-
-        }
-
         [Required]
         [MaxLength(255)]
         public string FirstName { get; set; }

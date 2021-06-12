@@ -1,6 +1,7 @@
-﻿<div class="padding-bottom-24">
-    <MatH4>@Title</MatH4>
-</div>
+﻿@using BookLibrary.Data.Services
+
+@inject IToolbarService toolbarService
+
 <MatPaper Elevation="5" Class="padding-24">
     @ChildContent
 </MatPaper>
@@ -11,4 +12,9 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        toolbarService.Title = Title;
+    }
 }

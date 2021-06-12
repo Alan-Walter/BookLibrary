@@ -5,6 +5,7 @@
 
 @inject IAuthorRepository repository
 @inject NavigationManager nagivation
+@inject IMapper mapper 
 
 <MatH3>Edit Author</MatH3>
 
@@ -50,7 +51,7 @@ else
         author = await repository.GetByIdAsync(Id);
         if (author != null)
         {
-            authorModel = new AuthorModel(author);
+            authorModel = mapper.Map<AuthorModel>(author);
         }
         initialized = true;
     }

@@ -1,13 +1,16 @@
-﻿@inherits LayoutComponentBase
+﻿@using BookLibrary.Data.Services
+
+@inherits LayoutComponentBase
 
 @inject NavigationManager Url
+@inject IToolbarService toolbarService
 
 <MatAppBarContainer>
     <MatAppBar Fixed="true">
         <MatAppBarRow>
             <MatAppBarSection>
                 <MatIconButton Icon="menu" @onclick="ToggleNavMenu"></MatIconButton>
-                <MatAppBarTitle>E-Book Library</MatAppBarTitle>
+                <MatAppBarTitle>@PageTitle</MatAppBarTitle>
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                 <MatIconButton Icon="account_circle" @onclick="LogOut">
@@ -26,13 +29,15 @@
                 </MatNavMenu>
             </MatDrawer>
             <MatDrawerContent>
-                <div class="container padding-24">
+                <div class="padding-24">
                     @Body
                 </div>
             </MatDrawerContent>
         </MatDrawerContainer>
     </MatAppBarContent>
 </MatAppBarContainer>
+
+<MatPortalHost></MatPortalHost>
 
 @code {
     private bool showDrawer = false;
@@ -46,7 +51,11 @@
     {
         Url.NavigateTo("Identity/Account/Logout", true);
     }
-}
 
-<MatPortalHost></MatPortalHost>
-<MatToastContainer />
+    protected override void OnParametersSet()
+    {
+        PageTitle = string.IsNullOrEmpty(toolbarService.Title) ? "E-Book Library" : toolbarService.Title;
+    }
+
+    public string PageTitle { get; set; }
+}

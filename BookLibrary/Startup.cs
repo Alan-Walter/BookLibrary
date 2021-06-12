@@ -1,4 +1,5 @@
 using BookLibrary.Core.Services;
+using BookLibrary.Data;
 using BookLibrary.Data.Services;
 using BookLibrary.Db;
 using BookLibrary.Db.Interfaces;
@@ -46,6 +47,8 @@ namespace BookLibrary
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();
 
+            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<IBookRepository, BookRepository>();
@@ -54,6 +57,8 @@ namespace BookLibrary
 
             services.AddScoped<IFileService, LocalFileService>();
             services.AddScoped<ITemporaryFileService, TemporaryFileService>();
+
+            services.AddScoped<IToolbarService, ToolbarService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

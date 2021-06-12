@@ -5,6 +5,7 @@
 @page "/Authors/List"
 
 @inject IAuthorRepository repository
+@inject IMapper mapper
 
 <MatH3>Authors</MatH3>
 <MatButtonLink Href="/Authors/Create" Raised="true" Icon="add">Create Author</MatButtonLink>
@@ -76,7 +77,7 @@
     {
         var specification = new AuthorListSpecification(pageSize, pageIndex);
         var authorEntities = await repository.ListAsync(specification);
-        authors = authorEntities.Select(i => new AuthorModel(i)).ToList();
+        authors = authorEntities.Select(i => mapper.Map<AuthorModel>(i)).ToList();
     }
 
     private async Task DeleteAuthor(Guid id)

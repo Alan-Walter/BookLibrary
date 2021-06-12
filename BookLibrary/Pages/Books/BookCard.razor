@@ -1,5 +1,36 @@
-﻿<h3>BookCard</h3>
+﻿@using BookLibrary.Data.Models 
+
+<MatCard>
+    <MatCardContent>
+        <MatCardMedia Wide="true" ImageUrl="@Model.ImageUrl"></MatCardMedia>
+        <div>
+            <MatHeadline6>
+                @Model.Title
+            </MatHeadline6>
+            <MatSubtitle2>
+                @string.Join(",", Model.Authors)
+            </MatSubtitle2>
+        </div>
+
+        <MatBody2>
+            @Model.Description
+        </MatBody2>
+    </MatCardContent>
+    <MatCardActions>
+        <MatCardActionButtons>
+            <MatButton>Read</MatButton>
+            <MatButton>Bookmark</MatButton>
+        </MatCardActionButtons>
+
+        <MatCardActionIcons>
+            <MatIconButton Icon="@MatIconNames.Favorite"></MatIconButton>
+            <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
+        </MatCardActionIcons>
+    </MatCardActions>
+</MatCard>
 
 @code {
 
+    [Parameter]
+    public BookModel Model { get; set; }
 }
