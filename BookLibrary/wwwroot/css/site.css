@@ -76,3 +76,12 @@ a, .btn-link {
 .mdc-drawer-app-content .mdc-drawer-app-content.mat-drawer-app-content {
     overflow: inherit;
 }
+
+.page-header-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.page-header-toolbar :not(:last-child) {
+    margin-right: 8px;
+}

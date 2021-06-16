@@ -7,21 +7,19 @@
 @inject NavigationManager nagivation
 @inject IMapper mapper 
 
-<MatH3>Edit Author</MatH3>
-
-@if (!initialized)
-{
-    <MatProgressBar Indeterminate="true"></MatProgressBar>
-}
-else
-{
-    if (author == null)
+<EntityForm Title="Edit Author">
+    @if (!initialized)
     {
-        <EntityNotFound EntityType="@typeof(Author)" Id="@Id"/>
+        <MatProgressBar Indeterminate="true"></MatProgressBar>
     }
     else
     {
-        <MatPaper Elevation="5" Class="padding-16">
+        if (author == null)
+        {
+            <EntityNotFound EntityType="@typeof(Author)" Id="@Id" />
+        }
+        else
+        {
             <EditForm Model="authorModel" OnValidSubmit="Success">
                 <DataAnnotationsValidator />
                 <p>
@@ -35,9 +33,9 @@ else
                 </p>
                 <MatButton Type="submit" Raised="true">Save Changes</MatButton>
             </EditForm>
-        </MatPaper>
+        }
     }
-}
+</EntityForm>
 @code {
     [Parameter]
     public Guid Id { get; set; }

@@ -1,16 +1,16 @@
-﻿@using BookLibrary.Data.Services
+﻿@using Microsoft.AspNetCore.Components.Routing
+@using BookLibrary.Components
 
 @inherits LayoutComponentBase
 
 @inject NavigationManager Url
-@inject IToolbarService toolbarService
 
 <MatAppBarContainer>
     <MatAppBar Fixed="true">
         <MatAppBarRow>
             <MatAppBarSection>
                 <MatIconButton Icon="menu" @onclick="ToggleNavMenu"></MatIconButton>
-                <MatAppBarTitle>@PageTitle</MatAppBarTitle>
+                <MatAppBarTitle>E-Book Library</MatAppBarTitle>
             </MatAppBarSection>
             <MatAppBarSection Align="@MatAppBarSectionAlign.End">
                 <MatIconButton Icon="account_circle" @onclick="LogOut">
@@ -51,11 +51,4 @@
     {
         Url.NavigateTo("Identity/Account/Logout", true);
     }
-
-    protected override void OnParametersSet()
-    {
-        PageTitle = string.IsNullOrEmpty(toolbarService.Title) ? "E-Book Library" : toolbarService.Title;
-    }
-
-    public string PageTitle { get; set; }
 }

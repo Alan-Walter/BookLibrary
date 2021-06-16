@@ -57,8 +57,6 @@ namespace BookLibrary
 
             services.AddScoped<IFileService, LocalFileService>();
             services.AddScoped<ITemporaryFileService, TemporaryFileService>();
-
-            services.AddScoped<IToolbarService, ToolbarService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

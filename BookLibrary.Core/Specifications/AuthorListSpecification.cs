@@ -10,7 +10,7 @@ namespace BookLibrary.Core.Specifications
     {
         public AuthorListSpecification(int pageSize, int pageIndex) : base()
         {
-            Query.Skip(pageSize * pageIndex).Take(pageSize);
+            Query.OrderBy(i => i.FirstName).Skip(pageSize * pageIndex).Take(pageSize);
         }
     }
 }

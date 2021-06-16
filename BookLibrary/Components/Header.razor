@@ -1,12 +1,12 @@
-﻿<Header Title="@Title"/>
-
-<MatPaper Elevation="5" Class="padding-24">
+﻿<MatH5>@Title</MatH5>
+<div class="page-header-toolbar">
     @ChildContent
-</MatPaper>
+</div>
 
 @code {
     [Parameter]
     public string Title { get; set; }
+
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }

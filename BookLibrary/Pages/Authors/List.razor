@@ -7,8 +7,9 @@
 @inject IAuthorRepository repository
 @inject IMapper mapper
 
-<MatH3>Authors</MatH3>
-<MatButtonLink Href="/Authors/Create" Raised="true" Icon="add">Create Author</MatButtonLink>
+<Header Title="Authors">
+    <MatButtonLink Href="/Authors/Create" Raised="true" Icon="add">Create Author</MatButtonLink>
+</Header>
 <div class="padding-top-16">
     @if (authors == null)
     {
