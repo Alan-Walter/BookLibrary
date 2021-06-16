@@ -50,16 +50,26 @@
             </div>
         </div>
         <div class="padding-top-16">
-            <MatPaginator Length="@count" PageSize="@pageSize" Page="@OnPage" ></MatPaginator>
+            <MatPaginator Length="@count" PageSize="@pageSize" Page="@OnPage"></MatPaginator>
         </div>
     }
 </div>
+
+<MatSnackbar @bind-IsOpen="@snackBarIsOpen">
+    <MatSnackbarContent>Do you want to delete @deleteEntity?.ToString()</MatSnackbarContent>
+    <MatSnackbarActions Class="snackbar-buttons">
+        <MatButton OnClick="ConfirmDelete" Raised="true">Delete</MatButton>
+        <MatButton OnClick="CancelDelete" Raised="true">Cancel</MatButton>
+    </MatSnackbarActions>
+</MatSnackbar>
 
 @code{
     List<AuthorModel> authors = null;
     int pageSize = 10;
     int pageIndex = 0;
     int count = 0;
+    bool snackBarIsOpen = false;
+    AuthorModel deleteEntity = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,9 +94,24 @@
     private async Task DeleteAuthor(Guid id)
     {
         var entity = await repository.GetByIdAsync(id);
+        deleteEntity = mapper.Map<AuthorModel>(entity);
+        snackBarIsOpen = true;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        var entity = await repository.GetByIdAsync(deleteEntity.Id);
         await repository.DeleteAsync(entity);
         var entityModel = authors.FirstOrDefault(i => i.Id == entity.Id);
         authors.Remove(entityModel);
+
+        deleteEntity = null;
+        snackBarIsOpen = false;
     }
 
+    private void CancelDelete()
+    {
+        deleteEntity = null;
+        snackBarIsOpen = false;
+    }
 }

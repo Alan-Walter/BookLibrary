@@ -82,6 +82,7 @@ a, .btn-link {
     flex-wrap: wrap;
 }
 
-.page-header-toolbar :not(:last-child) {
+.page-header-toolbar :not(:last-child),
+.snackbar-buttons :not(:last-child){
     margin-right: 8px;
 }
