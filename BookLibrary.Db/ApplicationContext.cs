@@ -13,6 +13,12 @@ namespace BookLibrary.Db
 
         public DbSet<Book> Books { get; set; }
 
+        public DbSet<Genre> Genres { get; set; }
+
+        public DbSet<BookGroup> BookGroups { get; set; }
+
+        public DbSet<BinaryFile> BinaryFiles { get; set; }
+
         public ApplicationContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();

@@ -9,9 +9,7 @@ namespace BookLibrary.Data
     {
         public AutoMapperProfile()
         {
-            CreateMap<Author, AuthorModel>().ReverseMap();
-            CreateMap<Book, BookModel>().ReverseMap();
-            CreateMap<BinaryFile, FileModel>().ReverseMap();
+            CreateMap<BookGroup, BookGroupModel>().ReverseMap();
         }
     }
 }

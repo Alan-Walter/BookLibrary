@@ -1,3 +1,6 @@
+using AutoMapper;
+using AutoMapper.EquivalencyExpression;
+
 using BookLibrary.Core.Services;
 using BookLibrary.Data;
 using BookLibrary.Data.Services;
@@ -37,13 +40,18 @@ namespace BookLibrary
 
             services.AddAntDesign();
 
-            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+            services.AddAutoMapper((serviceProvider, automapper) =>
+            {
+                automapper.AddCollectionMappers();
+                automapper.UseEntityFrameworkCoreModel<ApplicationContext>(serviceProvider);
+            }, typeof(AutoMapperProfile).Assembly);
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IBinaryFileRepository, BinaryFileRepository>();
+            services.AddScoped<IBookGroupRepository, BookGroupRepository>();
 
             services.AddScoped<IFileService, LocalFileService>();
             services.AddScoped<ITemporaryFileService, TemporaryFileService>();

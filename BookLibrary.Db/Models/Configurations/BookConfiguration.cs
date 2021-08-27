@@ -16,9 +16,6 @@ namespace BookLibrary.Db.Models.Configurations
 
             builder.Property(i => i.ImageUrl)
                 .HasMaxLength(256);
-
-            builder.HasMany(i => i.Childs)
-                .WithOne(i => i.Parent);
         }
     }
 }

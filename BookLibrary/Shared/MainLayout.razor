@@ -1,57 +1,53 @@
-﻿@using Microsoft.AspNetCore.Components.Routing
-
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 @inject NavigationManager Url
+@inject IJSRuntime jsRuntime
 
-<Layout Style="min-height: 100vh; ">
-    <Sider Collapsible Collapsed=@collapsed OnCollapse=@OnCollapse>
-        <div class="logo" />
-        <Menu Theme="MenuTheme.Dark" DefaultSelectedKeys=@(new[]{"1"}) Mode="MenuMode.Inline">
-            <MenuItem Key="1">
-                <Icon Type="pie-chart" Theme="outline" />
-                <span>Option 1</span>
+<Layout>
+    <Sider Collapsible Collapsed=@collapsed OnCollapse=@OnCollapse Theme="SiderTheme.Light">
+        <div class="logo">
+            <h3>Library</h3>
+        </div>
+        <Menu Theme="MenuTheme.Light" DefaultSelectedKeys=@(new[]{"1"}) Mode="MenuMode.Inline">
+            <MenuItem Key="1" RouterLink="@Url.ToAbsoluteUri("/").AbsoluteUri">
+                <Icon Type="home" Theme="outline" />
+                <span>Home</span>
             </MenuItem>
-            <MenuItem Key="2">
-                <Icon Type="desktop" Theme="outline" />
-                <span>Option 2</span>
+            <MenuItem Key="2" RouterLink="@Url.ToAbsoluteUri("/groups/list").AbsoluteUri">
+                <Icon Type="branches" Theme="outline" />
+                <span>Groups</span>
             </MenuItem>
-            @{
-                RenderFragment sub1Title =
-                @<span>
-                    <Icon Type="user" Theme="outline" />
-                    <span>User</span>
-                </span>;
-            }
-            <SubMenu Key="sub1" TitleTemplate=sub1Title>
-                <MenuItem Key="3">Tom</MenuItem>
-                <MenuItem Key="4">Bill</MenuItem>
-                <MenuItem Key="5">Alex</MenuItem>
-            </SubMenu>
-            @{
-                RenderFragment sub2Title =
-                @<span>
-                    <Icon Type="team" Theme="outline" />
-                    <span>Team</span>
-                </span>;
-            }
-            <SubMenu Key="sub2" TitleTemplate=sub2Title>
-                <MenuItem Key="6">Team 1</MenuItem>
-                <MenuItem Key="8">Team 2</MenuItem>
-            </SubMenu>
-            <MenuItem Key="9">
-                <Icon Type="file" Theme="outline" />
-            </MenuItem>
+                <AuthorizeView>
+                    <Authorized>
+                        @{
+                            RenderFragment sub1Title =
+                            @<span>
+                                <Icon Type="user" Theme="outline" />
+                                <span>User</span>
+                            </span>;
+                        }
+                        <SubMenu Key="sub1" TitleTemplate=sub1Title>
+                            <MenuItem Key="3" OnClick="OnLogOut">Log out</MenuItem>
+                        </SubMenu>
+                    </Authorized>
+                    <NotAuthorized>
+                        <MenuItem Key="3" RouterLink="@Url.ToAbsoluteUri("/Identity/Account/Login").AbsoluteUri">
+                            <Icon Type="login" Theme="outline" />
+                            <span>Login</span>
+                        </MenuItem>
+                    </NotAuthorized>
+                </AuthorizeView>
         </Menu>
     </Sider>
     <Layout Class="site-layout">
-        <Header Class="site-header"></Header>
+        <Header Class="site-header">
+            <Button Icon="github" Size="large" Type="link" OnClick="OnGitHubClick" />
+        </Header>
         <Content>
             <div class="site-content">
                 @Body
             </div>
         </Content>
-        <Footer>E-Book Library ©2021 Created by <a href="https://github.com/riwexoyd/BookLibrary">Riwexoyd</a></Footer>
     </Layout>
 </Layout>
 
@@ -62,5 +58,15 @@
     void OnCollapse(bool collapsed)
     {
         this.collapsed = collapsed;
+    }
+
+    async Task OnGitHubClick()
+    {
+        await jsRuntime.InvokeAsync<object>("open", "https://github.com/riwexoyd/BookLibrary", "_blank");
+    }
+
+    void OnLogOut()
+    {
+        Url.NavigateTo("Identity/Account/Logout", true);
     }
 }

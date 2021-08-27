@@ -1,0 +1,37 @@
+﻿@page "/groups/list"
+
+
+@inject IBookGroupRepository repository
+@inject IMapper mapper
+
+<h1>List of groups</h1>
+<AuthorizeView>
+    <Authorized>
+        <p>
+            <Button Type="primary" Icon="plus">Add group</Button>
+        </p>
+    </Authorized>
+</AuthorizeView>
+
+<p>
+    <Search @bind-Value="@searchKey" Placeholder="Search.." />
+</p>
+<Tree SearchValue="@searchKey"
+        MatchedClass="site-tree-search-value"
+        DataSource="groups"
+        TitleExpression="x => x.DataItem.Title"
+        ChildrenExpression="x => x.DataItem.Childs"
+        KeyExpression="x => x.Id"></Tree>
+
+@code {
+    string searchKey;
+
+    List<BookGroupModel> groups = new List<BookGroupModel>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var bookGroups = await repository.ListAllAsync();
+        groups.AddRange(bookGroups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)).ToList());
+    }
+}
