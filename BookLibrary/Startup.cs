@@ -6,8 +6,6 @@ using BookLibrary.Db.Interfaces;
 using BookLibrary.Db.Models;
 using BookLibrary.Db.Repositories;
 
-using MatBlazor;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -32,20 +30,12 @@ namespace BookLibrary
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddMatBlazor();
-            services.AddMatToaster(config =>
-            {
-                config.Position = MatToastPosition.TopRight;
-                config.PreventDuplicates = true;
-                config.NewestOnTop = true;
-                config.ShowCloseButton = true;
-                config.MaximumOpacity = 95;
-                config.VisibleStateDuration = 3000;
-            });
 
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();
+
+            services.AddAntDesign();
 
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 

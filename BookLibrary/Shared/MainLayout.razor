@@ -1,54 +1,66 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing
-@using BookLibrary.Components
 
 @inherits LayoutComponentBase
 
 @inject NavigationManager Url
 
-<MatAppBarContainer>
-    <MatAppBar Fixed="true">
-        <MatAppBarRow>
-            <MatAppBarSection>
-                <MatIconButton Icon="menu" @onclick="ToggleNavMenu"></MatIconButton>
-                <MatAppBarTitle>E-Book Library</MatAppBarTitle>
-            </MatAppBarSection>
-            <MatAppBarSection Align="@MatAppBarSectionAlign.End">
-                <MatIconButton Icon="account_circle" @onclick="LogOut">
-                </MatIconButton>
-            </MatAppBarSection>
-        </MatAppBarRow>
-    </MatAppBar>
+<Layout Style="min-height: 100vh; ">
+    <Sider Collapsible Collapsed=@collapsed OnCollapse=@OnCollapse>
+        <div class="logo" />
+        <Menu Theme="MenuTheme.Dark" DefaultSelectedKeys=@(new[]{"1"}) Mode="MenuMode.Inline">
+            <MenuItem Key="1">
+                <Icon Type="pie-chart" Theme="outline" />
+                <span>Option 1</span>
+            </MenuItem>
+            <MenuItem Key="2">
+                <Icon Type="desktop" Theme="outline" />
+                <span>Option 2</span>
+            </MenuItem>
+            @{
+                RenderFragment sub1Title =
+                @<span>
+                    <Icon Type="user" Theme="outline" />
+                    <span>User</span>
+                </span>;
+            }
+            <SubMenu Key="sub1" TitleTemplate=sub1Title>
+                <MenuItem Key="3">Tom</MenuItem>
+                <MenuItem Key="4">Bill</MenuItem>
+                <MenuItem Key="5">Alex</MenuItem>
+            </SubMenu>
+            @{
+                RenderFragment sub2Title =
+                @<span>
+                    <Icon Type="team" Theme="outline" />
+                    <span>Team</span>
+                </span>;
+            }
+            <SubMenu Key="sub2" TitleTemplate=sub2Title>
+                <MenuItem Key="6">Team 1</MenuItem>
+                <MenuItem Key="8">Team 2</MenuItem>
+            </SubMenu>
+            <MenuItem Key="9">
+                <Icon Type="file" Theme="outline" />
+            </MenuItem>
+        </Menu>
+    </Sider>
+    <Layout Class="site-layout">
+        <Header Class="site-header"></Header>
+        <Content>
+            <div class="site-content">
+                @Body
+            </div>
+        </Content>
+        <Footer>E-Book Library ©2021 Created by <a href="https://github.com/riwexoyd/BookLibrary">Riwexoyd</a></Footer>
+    </Layout>
+</Layout>
 
-    <MatAppBarContent>
-        <MatDrawerContainer>
-            <MatDrawer @bind-Opened="@showDrawer" Mode="@MatDrawerMode.Modal">
-                <MatNavMenu Multi="true">
-                    <MatNavItem Href="@Url.ToAbsoluteUri("").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="home"></MatIcon>Home</MatNavItem>
-                    <MatNavItem Href="@Url.ToAbsoluteUri("/Books/List").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Books</MatNavItem>
-                    <MatNavItem Href="@Url.ToAbsoluteUri("/Authors/List").AbsoluteUri" NavLinkMatch="NavLinkMatch.All"><MatIcon Icon="book"></MatIcon>Authors</MatNavItem>
-                </MatNavMenu>
-            </MatDrawer>
-            <MatDrawerContent>
-                <div class="padding-24">
-                    @Body
-                </div>
-            </MatDrawerContent>
-        </MatDrawerContainer>
-    </MatAppBarContent>
-</MatAppBarContainer>
-
-<MatPortalHost></MatPortalHost>
 
 @code {
-    private bool showDrawer = false;
+    bool collapsed = false;
 
-    private void ToggleNavMenu()
+    void OnCollapse(bool collapsed)
     {
-        showDrawer = !showDrawer;
-    }
-
-    private void LogOut()
-    {
-        Url.NavigateTo("Identity/Account/Logout", true);
+        this.collapsed = collapsed;
     }
 }

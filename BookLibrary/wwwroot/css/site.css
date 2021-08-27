@@ -42,47 +42,24 @@ a, .btn-link {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
 
-.padding-24 {
+.logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+}
+
+.site-layout .site-content {
+    background: #fff;
     padding: 24px;
 }
 
-.padding-16 {
-    padding: 16px;
-}
-
-.padding-top-16 {
-    padding-top: 16px;
-}
-
-.padding-bottom-24 {
-    padding-bottom: 24px;
-}
-
-.padding-0 {
-    padding: 0;
-}
-
-.mat-layout-grid.padding-0 {
-    padding: 0;
-}
-
-.mdc-drawer-app-content .mdc-drawer-app-content.mat-drawer-app-content {
-    overflow: inherit;
-}
-
-.page-header-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.page-header-toolbar :not(:last-child),
-.snackbar-buttons :not(:last-child){
-    margin-right: 8px;
+.ant-layout-footer {
+    text-align: center;
 }
