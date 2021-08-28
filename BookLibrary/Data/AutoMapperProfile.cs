@@ -9,7 +9,8 @@ namespace BookLibrary.Data
     {
         public AutoMapperProfile()
         {
-            CreateMap<BookGroup, BookGroupModel>().ReverseMap();
+            CreateMap<BookGroup, BookGroupModel>();
+            CreateMap<BookGroupModel, BookGroup>().ForMember(i => i.Parent, opt => opt.Ignore());
         }
     }
 }

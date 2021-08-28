@@ -21,7 +21,7 @@ namespace BookLibrary.Db.Models.Configurations
             builder.HasData(new BookGroup
             {
                 Id = Guid.Parse("{18626CA0-6D3D-4F8A-AB66-A39534723548}"),
-                Title = "Default"
+                Title = "All"
             });
         }
     }

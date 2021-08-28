@@ -1,0 +1,46 @@
+﻿@page "/groups/add"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@inject IBookGroupRepository repository
+@inject IMapper mapper
+@inject NavigationManager uri
+
+<h1>Create group</h1>
+
+<Form Model="@model"
+      OnFinish="OnFinish">
+    <FormItem>
+        <Input @bind-Value="@context.Title" />
+    </FormItem>
+    <FormItem>
+        <Select @bind-Value="@context.Parent" 
+                AllowClear="true" 
+                DataSource="groups"
+                LabelName="@nameof(BookGroupModel.Title)"/>
+    </FormItem>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            Submit
+        </Button>
+    </FormItem>
+</Form>
+
+@code {
+    private BookGroupModel model = new BookGroupModel();
+    private List<BookGroupModel> groups = new List<BookGroupModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var bookGroups = await repository.ListAllAsync();
+        groups.AddRange(bookGroups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)));
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        var bookGroup = mapper.Map<BookGroupModel, BookGroup>(model);
+        bookGroup.Parent = model.Parent != null ? await repository.GetByIdAsync(model.Parent.Id) : null;
+        await repository.AddAsync(bookGroup);
+        uri.NavigateTo("/groups/list");
+    }
+}

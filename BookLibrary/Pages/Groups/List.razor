@@ -3,35 +3,51 @@
 
 @inject IBookGroupRepository repository
 @inject IMapper mapper
+@inject NavigationManager uri
 
 <h1>List of groups</h1>
-<AuthorizeView>
-    <Authorized>
-        <p>
-            <Button Type="primary" Icon="plus">Add group</Button>
-        </p>
-    </Authorized>
-</AuthorizeView>
+@if (hasPermission)
+{
+    <p>
+        <Button Type="primary" Icon="plus" OnClick="OnCreate">Add</Button>
+        <Button Type="primary" Icon="edit">Edit</Button>
+    </p>
+}
 
 <p>
-    <Search @bind-Value="@searchKey" Placeholder="Search.." />
+    <Search @bind-Value="@searchKey" Placeholder="Search..." />
 </p>
 <Tree SearchValue="@searchKey"
-        MatchedClass="site-tree-search-value"
-        DataSource="groups"
-        TitleExpression="x => x.DataItem.Title"
-        ChildrenExpression="x => x.DataItem.Childs"
-        KeyExpression="x => x.Id"></Tree>
+      MatchedClass="site-tree-search-value"
+      DataSource="groups"
+      TitleExpression="x => x.DataItem.Title"
+      ChildrenExpression="x => x.DataItem.Childs"
+      KeyExpression="x => x.Id"
+      Selectable="hasPermission"
+      Multiple="false"
+      @bind-SelectedKey="selectedKey"></Tree>
 
 @code {
-    string searchKey;
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private bool hasPermission = false;
+    private string selectedKey;
+    private string searchKey;
 
     List<BookGroupModel> groups = new List<BookGroupModel>();
 
-
     protected override async Task OnInitializedAsync()
     {
-        var bookGroups = await repository.ListAllAsync();
+        var bookGroups = await repository.ListAsync(new RootBookGroupSpecification());
         groups.AddRange(bookGroups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)).ToList());
+
+        var user = (await authenticationStateTask).User;
+        hasPermission = user.Identity.IsAuthenticated && user.IsInRole("Admin");
+    }
+
+    private void OnCreate()
+    {
+        uri.NavigateTo("/groups/add");
     }
 }
