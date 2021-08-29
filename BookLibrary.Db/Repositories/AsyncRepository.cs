@@ -52,7 +52,9 @@ namespace BookLibrary.Db.Repositories
 
         public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
         {
+#pragma warning disable CA2016 // Forward the 'CancellationToken' parameter to methods that take one
             await _dbContext.Set<T>().AddAsync(entity);
+#pragma warning restore CA2016 // Forward the 'CancellationToken' parameter to methods that take one
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return entity;

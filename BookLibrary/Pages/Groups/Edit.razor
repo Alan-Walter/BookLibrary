@@ -1,0 +1,62 @@
+﻿@page "/groups/edit/{id:guid}"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@inject IBookGroupRepository repository
+@inject IMapper mapper
+@inject NavigationManager uri
+
+<h1>Edit group</h1>
+
+<Form Model="@model"
+      OnFinish="OnFinish">
+    <FormItem>
+        <Input @bind-Value="@context.Title" />
+    </FormItem>
+    <FormItem>
+        <Select @bind-Value="@context.Parent"
+                AllowClear="true"
+                DataSource="groups"
+                LabelName="@nameof(BookGroupModel.Title)"
+                Disabled="CannotChangeParent"/>
+        @if (CannotChangeParent)
+        {
+            <span>Should be no children</span>
+        }
+    </FormItem>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            Submit
+        </Button>
+    </FormItem>
+</Form>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private bool CannotChangeParent => model.Childs != null && model.Childs.Count != 0;
+    private BookGroupModel model = new BookGroupModel();
+    private BookGroup entity;
+    private List<BookGroupModel> groups = new List<BookGroupModel>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        entity = await repository.GetByIdAsync(Id);
+        model = mapper.Map<BookGroup, BookGroupModel>(entity);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var bookGroups = await repository.ListAsync(new BookGroupExcludeSpecification(Id));
+        groups.AddRange(bookGroups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)));
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        var bookGroup = mapper.Map<BookGroupModel, BookGroup>(model, entity);
+        bookGroup.Parent = model.Parent != null ? await repository.GetByIdAsync(model.Parent.Id) : null;
+        await repository.UpdateAsync(bookGroup);
+        uri.NavigateTo("/groups/list");
+    }
+}

@@ -39,7 +39,7 @@ namespace BookLibrary
             services.AddDbContext<ApplicationContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-                options.LogTo(Console.WriteLine);
+                //options.LogTo(Console.WriteLine);
             });
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();

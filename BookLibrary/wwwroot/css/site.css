@@ -82,3 +82,11 @@ a, .btn-link {
 .site-tree-search-value {
     color: #f50;
 }
+
+.tree-template {
+    display: flex;
+}
+
+.tree-button-group {
+    padding-left: 8px;
+}

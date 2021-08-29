@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using System;
 
@@ -6,6 +7,7 @@ namespace BookLibrary.Db.Models.Configurations
 {
     public class BookGroupConfiguration : EntityConfiguration<BookGroup>
     {
+        public static readonly Guid AllGroupId = Guid.Parse("{18626CA0-6D3D-4F8A-AB66-A39534723548}");
 
         public override void Configure(EntityTypeBuilder<BookGroup> builder)
         {
@@ -20,7 +22,7 @@ namespace BookLibrary.Db.Models.Configurations
 
             builder.HasData(new BookGroup
             {
-                Id = Guid.Parse("{18626CA0-6D3D-4F8A-AB66-A39534723548}"),
+                Id = AllGroupId,
                 Title = "All"
             });
         }

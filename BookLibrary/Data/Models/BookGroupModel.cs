@@ -9,6 +9,8 @@ namespace BookLibrary.Data.Models
 {
     public class BookGroupModel : BaseModel
     {
+        public string Uid => Id.ToString();
+
         [Required]
         [MaxLength(255)]
         [DisplayName("Title")]

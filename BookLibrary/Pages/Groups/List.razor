@@ -1,6 +1,5 @@
 ﻿@page "/groups/list"
 
-
 @inject IBookGroupRepository repository
 @inject IMapper mapper
 @inject NavigationManager uri
@@ -8,39 +7,52 @@
 <h1>List of groups</h1>
 @if (hasPermission)
 {
-    <p>
-        <Button Type="primary" Icon="plus" OnClick="OnCreate">Add</Button>
-        <Button Type="primary" Icon="edit">Edit</Button>
-    </p>
+<p>
+    <Button Type="@ButtonType.Primary" Icon="plus" OnClick="OnCreate">Add</Button>
+</p>
 }
 
 <p>
     <Search @bind-Value="@searchKey" Placeholder="Search..." />
 </p>
-<Tree SearchValue="@searchKey"
+@{
+    RenderFragment<TreeNode<BookGroupModel>> template = (context) =>
+    @<div class="tree-template">
+        <div>@context.DataItem.Title</div>
+        @if (hasPermission && context.DataItem.Id != BookLibrary.Db.Models.Configurations.BookGroupConfiguration.AllGroupId)
+        {
+         <div class="tree-button-group">
+             <Button Type="@ButtonType.Link" Icon="edit" Shape="circle" Size="small" OnClick="(_) => EditGroup(context.DataItem)"></Button>
+             <Button Type="@ButtonType.Link" Icon="delete" Shape="circle" Size="small" OnClick="(_) => DeleteGroup(context.DataItem)"></Button>
+         </div>
+        }
+    </div>;
+}
+
+<Tree
+      TItem="BookGroupModel"
+      SearchValue="@searchKey"
       MatchedClass="site-tree-search-value"
       DataSource="groups"
       TitleExpression="x => x.DataItem.Title"
       ChildrenExpression="x => x.DataItem.Childs"
-      KeyExpression="x => x.Id"
-      Selectable="hasPermission"
+      KeyExpression="x => x.DataItem.Uid"
       Multiple="false"
-      @bind-SelectedKey="selectedKey"></Tree>
+      TitleTemplate="template"></Tree>
 
 @code {
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     private bool hasPermission = false;
-    private string selectedKey;
     private string searchKey;
 
     List<BookGroupModel> groups = new List<BookGroupModel>();
 
     protected override async Task OnInitializedAsync()
     {
-        var bookGroups = await repository.ListAsync(new RootBookGroupSpecification());
-        groups.AddRange(bookGroups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)).ToList());
+        var bookGroups = await repository.ListAllAsync();
+        groups.AddRange(bookGroups.Where(i => i.Parent == null).Select(i => mapper.Map<BookGroup, BookGroupModel>(i)).ToList());
 
         var user = (await authenticationStateTask).User;
         hasPermission = user.Identity.IsAuthenticated && user.IsInRole("Admin");
@@ -49,5 +61,15 @@
     private void OnCreate()
     {
         uri.NavigateTo("/groups/add");
+    }
+
+    private void EditGroup(BookGroupModel groupModel)
+    {
+        uri.NavigateTo($"/groups/edit/{groupModel.Id}");
+    }
+
+    private void DeleteGroup(BookGroupModel groupModel)
+    {
+
     }
 }
