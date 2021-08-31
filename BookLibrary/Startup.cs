@@ -16,8 +16,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using System;
-
 namespace BookLibrary
 {
     public class Startup
@@ -39,7 +37,6 @@ namespace BookLibrary
             services.AddDbContext<ApplicationContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-                //options.LogTo(Console.WriteLine);
             });
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();

@@ -2,7 +2,7 @@
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class BinaryFileConfiguration : EntityConfiguration<BinaryFile>
+    internal class BinaryFileConfiguration : EntityConfiguration<BinaryFile>
     {
         public override void Configure(EntityTypeBuilder<BinaryFile> builder)
         {

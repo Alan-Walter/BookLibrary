@@ -2,7 +2,7 @@
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class BookConfiguration : EntityConfiguration<Book>
+    internal class BookConfiguration : EntityConfiguration<Book>
     {
         public override void Configure(EntityTypeBuilder<Book> builder)
         {
@@ -16,6 +16,9 @@ namespace BookLibrary.Db.Models.Configurations
 
             builder.Property(i => i.ImageUrl)
                 .HasMaxLength(256);
+
+            builder.HasOne(i => i.Group)
+                .WithMany(i => i.Books);
         }
     }
 }

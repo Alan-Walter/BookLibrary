@@ -5,7 +5,7 @@ using System;
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class UserConfiguration : EntityConfiguration<User>
+    internal class UserConfiguration : EntityConfiguration<User>
     {
         internal static readonly Guid AdminUid = Guid.Parse("{0278C83A-3F47-4B60-BF46-9F04690F0C04}");
 

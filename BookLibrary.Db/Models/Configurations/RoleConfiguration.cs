@@ -4,7 +4,7 @@ using System;
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class RoleConfiguration : EntityConfiguration<Role>
+    internal class RoleConfiguration : EntityConfiguration<Role>
     {
         internal static readonly Guid AdminRoleId = Guid.Parse("{750B375A-475F-4195-9F31-6EE246BBF2CB}");
         const string AdminRoleName = "Admin";

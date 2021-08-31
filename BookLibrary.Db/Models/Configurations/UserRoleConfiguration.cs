@@ -6,7 +6,7 @@ using System;
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<Guid>>
+    internal class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<Guid>>
     {
         public void Configure(EntityTypeBuilder<IdentityUserRole<Guid>> builder)
         {

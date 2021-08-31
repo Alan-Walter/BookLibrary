@@ -5,7 +5,7 @@ using System;
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class BookGroupConfiguration : EntityConfiguration<BookGroup>
+    internal class BookGroupConfiguration : EntityConfiguration<BookGroup>
     {
         public static readonly Guid AllGroupId = Guid.Parse("{18626CA0-6D3D-4F8A-AB66-A39534723548}");
 

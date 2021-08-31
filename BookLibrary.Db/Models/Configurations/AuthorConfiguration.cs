@@ -4,7 +4,7 @@ using System;
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class AuthorConfiguration : EntityConfiguration<Author>
+    internal class AuthorConfiguration : EntityConfiguration<Author>
     {
         public override void Configure(EntityTypeBuilder<Author> builder)
         {

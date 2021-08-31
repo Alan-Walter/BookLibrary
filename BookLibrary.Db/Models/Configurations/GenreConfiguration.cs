@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BookLibrary.Db.Models.Configurations
 {
-    public class GenreConfiguration : EntityConfiguration<Genre>
+    internal class GenreConfiguration : EntityConfiguration<Genre>
     {
         public override void Configure(EntityTypeBuilder<Genre> builder)
         {

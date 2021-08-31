@@ -15,5 +15,7 @@ namespace BookLibrary.Db.Models
         public BookGroup Parent { get; set; }
 
         public ICollection<BookGroup> Childs { get; set; }
+
+        public ICollection<Book> Books { get; set; }
     }
 }
