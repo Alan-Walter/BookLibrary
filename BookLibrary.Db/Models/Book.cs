@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BookLibrary.Db.Models
 {
@@ -17,5 +18,7 @@ namespace BookLibrary.Db.Models
         public BookGroup Group { get; set; }
 
         public ICollection<BinaryFile> Files { get; set; }
+
+        public DateTime CreationDate { get; set; }
     }
 }

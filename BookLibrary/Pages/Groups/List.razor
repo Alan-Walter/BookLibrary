@@ -34,7 +34,12 @@
         }
     </div>;
 }
-
+@if (groups.Count == 0)
+{
+    <Empty/>
+}
+else
+{
 <Tree TItem="BookGroupModel"
       SearchValue="@searchKey"
       MatchedClass="site-tree-search-value"
@@ -45,7 +50,7 @@
       Multiple="false"
       TitleTemplate="template"
       DefaultExpandAll="true"></Tree>
-
+}
 @code {
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }

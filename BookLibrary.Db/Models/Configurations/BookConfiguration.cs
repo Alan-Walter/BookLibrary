@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BookLibrary.Db.Models.Configurations
 {
@@ -19,6 +20,10 @@ namespace BookLibrary.Db.Models.Configurations
 
             builder.HasOne(i => i.Group)
                 .WithMany(i => i.Books);
+
+            builder.Property(i => i.CreationDate)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("now() at time zone 'utc'");
         }
     }
 }

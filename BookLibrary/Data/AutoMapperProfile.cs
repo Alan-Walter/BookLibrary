@@ -11,6 +11,8 @@ namespace BookLibrary.Data
         {
             CreateMap<BookGroup, BookGroupModel>();
             CreateMap<BookGroupModel, BookGroup>().ForMember(i => i.Parent, opt => opt.Ignore());
+
+            CreateMap<Genre, GenreModel>().ReverseMap();
         }
     }
 }

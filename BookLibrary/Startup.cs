@@ -55,6 +55,7 @@ namespace BookLibrary
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IBinaryFileRepository, BinaryFileRepository>();
             services.AddScoped<IBookGroupRepository, BookGroupRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
 
             services.AddScoped<IFileService, LocalFileService>();
             services.AddScoped<ITemporaryFileService, TemporaryFileService>();
