@@ -1,5 +1,8 @@
-﻿<h3>BookPanel</h3>
-
+﻿
 @code {
+    [Parameter]
+    public Guid Group { get; set; }
 
+    [Parameter]
+    public List<Guid> Genres { get; set; }
 }

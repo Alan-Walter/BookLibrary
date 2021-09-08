@@ -33,6 +33,7 @@ namespace BookLibrary
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddControllers();
 
             services.AddDbContext<ApplicationContext>(options =>
             {
@@ -48,6 +49,8 @@ namespace BookLibrary
                 automapper.AddCollectionMappers();
                 automapper.UseEntityFrameworkCoreModel<ApplicationContext>(serviceProvider);
             }, typeof(AutoMapperProfile).Assembly);
+
+            services.AddLocalization();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -83,8 +86,14 @@ namespace BookLibrary
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseRequestLocalization(new RequestLocalizationOptions()
+                .SetDefaultCulture("en-US")
+                .AddSupportedCultures(new[] { "en-US", "ru-RU" })
+                .AddSupportedUICultures(new[] { "en-US", "ru-RU" }));
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");

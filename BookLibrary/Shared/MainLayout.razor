@@ -2,24 +2,25 @@
 
 @inject NavigationManager Url
 @inject IJSRuntime jsRuntime
+@inject IStringLocalizer<LayoutLocalization> Loc
 
 <Layout>
     <Sider Collapsible Collapsed=@collapsed OnCollapse=@OnCollapse Theme="SiderTheme.Light">
         <div class="logo">
-            <h3>Library</h3>
+            <h3>@Loc["Library"]</h3>
         </div>
         <Menu Theme="MenuTheme.Light" DefaultSelectedKeys=@(new[]{"1"}) Mode="MenuMode.Inline">
             <MenuItem Key="1" RouterLink="@Url.ToAbsoluteUri("/").AbsoluteUri">
                 <Icon Type="home" Theme="outline" />
-                <span>Home</span>
+                <span>@Loc["Home"]</span>
             </MenuItem>
             <MenuItem Key="2" RouterLink="@Url.ToAbsoluteUri("/groups/list").AbsoluteUri">
                 <Icon Type="branches" Theme="outline" />
-                <span>Groups</span>
+                <span>@Loc["Groups"]</span>
             </MenuItem>
             <MenuItem Key="3" RouterLink="@Url.ToAbsoluteUri("/genres/list").AbsoluteUri">
                 <Icon Type="container" Theme="outline" />
-                <span>Genres</span>
+                <span>@Loc["Genres"]</span>
             </MenuItem>
         </Menu>
     </Sider>
@@ -30,17 +31,18 @@
                     <Authorized>
                         <MenuItem Key="1" OnClick="OnLogOut">
                             <Icon Type="logout" Theme="outline" />
-                            <span>Log out</span>
+                            <span>@Loc["Logout"]</span>
                         </MenuItem>
                     </Authorized>
                     <NotAuthorized>
                         <MenuItem Key="1" RouterLink="@Url.ToAbsoluteUri("/Identity/Account/Login").AbsoluteUri">
                             <Icon Type="login" Theme="outline" />
-                            <span>Login</span>
+                            <span>@Loc["Login"]</span>
                         </MenuItem>
                     </NotAuthorized>
                 </AuthorizeView>
             </Menu>
+            <CultureSelector />
             <Button Icon="github" Size="large" Type="@ButtonType.Link" OnClick="OnGitHubClick" />
         </Header>
         <Content>

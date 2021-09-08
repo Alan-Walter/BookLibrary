@@ -1,0 +1,10 @@
+﻿@page "/books/add"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@inject IMapper mapper
+@inject IBookRepository repository
+@inject NavigationManager navigation
+
+<h1>Add book</h1>
+

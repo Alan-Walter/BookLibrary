@@ -1,0 +1,65 @@
+﻿@using System.Globalization
+@inject NavigationManager Nav
+
+<Popover
+         ContentTemplate="@_content" 
+         Title="Language"
+         Placement="@PlacementType.Bottom"
+         Trigger="@(new AntDesign.TriggerType[] { AntDesign.TriggerType.Click})">
+    <Button Icon="global"
+            Type="@ButtonType.Text">
+        @Culture.Name
+    </Button>
+</Popover>
+
+@code
+{
+    private RenderFragment _content =>
+    @<Space Direction="DirectionVHType.Vertical">
+    @foreach (var culture in supportedCultures)
+    {
+         <SpaceItem>
+             <Button Type="@ButtonType.Text"
+                     OnClick="() => OnChangeCulture(culture)">
+                 @culture.Name
+             </Button>
+         </SpaceItem>
+    }
+    </Space>;
+
+
+    private void OnChangeCulture(CultureInfo cultureInfo)
+    {
+        Culture = cultureInfo;
+    }
+
+    private CultureInfo[] supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("ru-RU"),
+    };
+
+    protected override void OnInitialized()
+    {
+        Culture = CultureInfo.CurrentCulture;
+    }
+
+    private CultureInfo Culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+            if (CultureInfo.CurrentCulture != value)
+            {
+                var uri = new Uri(Nav.Uri)
+                    .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+                var cultureEscaped = Uri.EscapeDataString(value.Name);
+                var uriEscaped = Uri.EscapeDataString(uri);
+
+                Nav.NavigateTo(
+                    $"Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
+                    forceLoad: true);
+            }
+        }
+    }
+}
