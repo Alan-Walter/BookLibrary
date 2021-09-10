@@ -1,86 +1,79 @@
 ﻿@page "/groups/list"
 
+@attribute [Authorize(Roles = "Admin")]
+
 @inject IBookGroupRepository repository
 @inject IMapper mapper
 @inject NavigationManager uri
 @inject MessageService message
+@inject IStringLocalizer<GroupsLocalization> loc
 
-<h1>List of groups</h1>
-@if (hasPermission)
-{
-    <p>
-        <Button Type="@ButtonType.Primary" Icon="plus" OnClick="OnCreate">Add</Button>
-    </p>
-}
-
+<h1>@loc["List"]</h1>
 <p>
-    <Search @bind-Value="@searchKey" Placeholder="Search..." />
+    <Button Type="@ButtonType.Primary" 
+            Icon="plus" 
+            OnClick="OnCreate">
+    @loc["Add"]
+    </Button>
 </p>
+
 @{
     RenderFragment<TreeNode<BookGroupModel>> template = (context) =>
     @<div class="tree-template">
         <div>@context.DataItem.Title</div>
-        @if (hasPermission)
-        {
-            <div class="tree-button-group">
-                <Button Type="@ButtonType.Link" Icon="edit" Shape="circle" Size="small" OnClick="(_) => EditGroup(context.DataItem)"></Button>
-                <Popconfirm Title="Are you sure delete this group?"
-                            OnConfirm="async (_) => await DeleteGroup(context.DataItem)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Type="@ButtonType.Link" Icon="delete" Shape="circle" Size="small"></Button>
-                </Popconfirm>
-            </div>
-        }
+        <div class="tree-button-group">
+            <Button Type="@ButtonType.Link" 
+                    Icon="edit" 
+                    Shape="circle" 
+                    Size="small" 
+                    OnClick="(_) => EditGroup(context.DataItem)">
+            </Button>
+            <Popconfirm Title="@loc["ConfirmDelete"]"
+                        OnConfirm="async (_) => await DeleteGroup(context.DataItem)"
+                        OkText="@loc["Yes"]"
+                        CancelText="@loc["No"]">
+                <Button Type="@ButtonType.Link" 
+                        Icon="delete" 
+                        Shape="circle" 
+                        Size="small">
+                </Button>
+            </Popconfirm>
+        </div>
     </div>;
 }
 @if (groups.Count == 0)
 {
-    <Empty/>
+    <Empty />
 }
 else
 {
-<Tree TItem="BookGroupModel"
-      SearchValue="@searchKey"
-      MatchedClass="site-tree-search-value"
-      DataSource="groups"
-      TitleExpression="x => x.DataItem.Title"
-      ChildrenExpression="x => x.DataItem.Childs"
-      KeyExpression="x => x.DataItem.Uid"
-      Multiple="false"
-      TitleTemplate="template"
-      DefaultExpandAll="true"></Tree>
+    <Tree TItem="BookGroupModel"
+          MatchedClass="site-tree-search-value"
+          DataSource="groups"
+          TitleExpression="x => x.DataItem.Title"
+          ChildrenExpression="x => x.DataItem.Childs"
+          KeyExpression="x => x.DataItem.Uid"
+          Multiple="false"
+          TitleTemplate="template"
+          OnNodeLoadDelayAsync="OnNodeLoadAsync"
+          IsLeafExpression="x => x.TreeLevel > 2">
+    </Tree>
 }
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-
-    private bool hasPermission = false;
-    private bool treeButtonClick = false;
-    private string searchKey;
-
     List<BookGroupModel> groups = new List<BookGroupModel>();
 
     protected override async Task OnInitializedAsync()
     {
-        var bookGroups = await repository.ListAllAsync();
-        groups.AddRange(bookGroups.Where(i => i.Parent == null).Select(i => mapper.Map<BookGroup, BookGroupModel>(i)).ToList());
-
-        var user = (await authenticationStateTask).User;
-        hasPermission = user.Identity.IsAuthenticated && user.IsInRole("Admin");
+        var bookGroups = await repository.ListAsync(new RootBookGroupSpecification());
+        groups.AddRange(bookGroups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)).ToList());
     }
 
-    protected override bool ShouldRender()
+    public async Task OnNodeLoadAsync(TreeEventArgs<BookGroupModel> args)
     {
-        if (!treeButtonClick)
-        {
-            return base.ShouldRender();
-        }
-        else
-        {
-            treeButtonClick = false;
-            return false;
-        }
+        var dataItem = ((BookGroupModel)args.Node.DataItem);
+        var childs = await repository.ListAsync(new ChildsBookGroupSpecification(dataItem.Id));
+        dataItem.Childs.Clear();
+        dataItem.Childs.AddRange(childs.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)));
     }
 
     private void OnCreate()
@@ -91,16 +84,14 @@ else
     private void EditGroup(BookGroupModel groupModel)
     {
         uri.NavigateTo($"/groups/edit/{groupModel.Id}");
-        treeButtonClick = true;
     }
 
     private async Task DeleteGroup(BookGroupModel groupModel)
     {
-        treeButtonClick = true;
         var entity = await repository.FirstOrDefaultAsync(new BookGroupWithoutBooksAndChildsSpecification(groupModel.Id));
         if (entity == null)
         {
-            await message.Warning($"Can't delete group");
+            await message.Warning(loc["CantDeleteGroup"].Value);
         }
         else
         {

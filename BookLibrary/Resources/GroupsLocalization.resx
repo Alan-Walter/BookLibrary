@@ -117,28 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Administration" xml:space="preserve">
-    <value>Администрирование</value>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
   </data>
-  <data name="Entities" xml:space="preserve">
-    <value>Сущности</value>
+  <data name="CantDeleteGroup" xml:space="preserve">
+    <value>Can't delete group</value>
   </data>
-  <data name="Genres" xml:space="preserve">
-    <value>Жанры</value>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Are you sure delete this group?</value>
   </data>
-  <data name="Groups" xml:space="preserve">
-    <value>Группы</value>
+  <data name="List" xml:space="preserve">
+    <value>List of groups</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Главная</value>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
   </data>
-  <data name="Library" xml:space="preserve">
-    <value>Библиотека</value>
-  </data>
-  <data name="Login" xml:space="preserve">
-    <value>Войти</value>
-  </data>
-  <data name="Logout" xml:space="preserve">
-    <value>Выйти</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

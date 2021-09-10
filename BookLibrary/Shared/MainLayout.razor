@@ -2,26 +2,34 @@
 
 @inject NavigationManager Url
 @inject IJSRuntime jsRuntime
-@inject IStringLocalizer<LayoutLocalization> Loc
+@inject IStringLocalizer<LayoutLocalization> loc
 
 <Layout>
     <Sider Collapsible Collapsed=@collapsed OnCollapse=@OnCollapse Theme="SiderTheme.Light">
         <div class="logo">
-            <h3>@Loc["Library"]</h3>
+            <h3>@loc["Library"]</h3>
         </div>
         <Menu Theme="MenuTheme.Light" DefaultSelectedKeys=@(new[]{"1"}) Mode="MenuMode.Inline">
             <MenuItem Key="1" RouterLink="@Url.ToAbsoluteUri("/").AbsoluteUri">
                 <Icon Type="home" Theme="outline" />
-                <span>@Loc["Home"]</span>
+                <span>@loc["Home"]</span>
             </MenuItem>
-            <MenuItem Key="2" RouterLink="@Url.ToAbsoluteUri("/groups/list").AbsoluteUri">
-                <Icon Type="branches" Theme="outline" />
-                <span>@Loc["Groups"]</span>
-            </MenuItem>
-            <MenuItem Key="3" RouterLink="@Url.ToAbsoluteUri("/genres/list").AbsoluteUri">
-                <Icon Type="container" Theme="outline" />
-                <span>@Loc["Genres"]</span>
-            </MenuItem>
+            <AuthorizeView Roles="@DefaultRoles.AdminRole">
+                <Authorized>
+                    <SubMenu Key="sub1" Title="@loc["Administration"]">
+                        <MenuItemGroup Key="g1" Title="@loc["Entities"]">
+                            <MenuItem Key="3" RouterLink="@Url.ToAbsoluteUri("/groups/list").AbsoluteUri">
+                                <Icon Type="branches" Theme="outline" />
+                                <span>@loc["Groups"]</span>
+                            </MenuItem>
+                            <MenuItem Key="4" RouterLink="@Url.ToAbsoluteUri("/genres/list").AbsoluteUri">
+                                <Icon Type="container" Theme="outline" />
+                                <span>@loc["Genres"]</span>
+                            </MenuItem>
+                        </MenuItemGroup>
+                    </SubMenu>
+                </Authorized>
+            </AuthorizeView>
         </Menu>
     </Sider>
     <Layout Class="site-layout">
@@ -31,13 +39,13 @@
                     <Authorized>
                         <MenuItem Key="1" OnClick="OnLogOut">
                             <Icon Type="logout" Theme="outline" />
-                            <span>@Loc["Logout"]</span>
+                            <span>@loc["Logout"]</span>
                         </MenuItem>
                     </Authorized>
                     <NotAuthorized>
                         <MenuItem Key="1" RouterLink="@Url.ToAbsoluteUri("/Identity/Account/Login").AbsoluteUri">
                             <Icon Type="login" Theme="outline" />
-                            <span>@Loc["Login"]</span>
+                            <span>@loc["Login"]</span>
                         </MenuItem>
                     </NotAuthorized>
                 </AuthorizeView>
