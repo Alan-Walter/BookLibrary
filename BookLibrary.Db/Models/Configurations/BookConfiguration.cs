@@ -24,6 +24,9 @@ namespace BookLibrary.Db.Models.Configurations
             builder.Property(i => i.CreationDate)
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("now() at time zone 'utc'");
+
+            builder.HasMany(i => i.Genres)
+                .WithMany(j => j.Books);
         }
     }
 }

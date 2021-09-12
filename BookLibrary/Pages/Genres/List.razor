@@ -1,93 +1,84 @@
 ﻿@page "/genres/list"
+@attribute [Authorize(Roles = "Admin")]
 
 @inject IGenreRepository repository
-@inject IMapper mapper 
-@inject ModalService modalService 
+@inject IMapper mapper
+@inject ModalService modalService
+@inject IStringLocalizer<GenresLocalization> loc
+@inject MessageService message
 
-<h1>List of genres</h1>
-<AuthorizeView Roles="Admin">
-    <Authorized Context="auth">
-        <p>
-            <Button Type="@ButtonType.Primary" Icon="plus" OnClick="OnCreate">Add</Button>
-        </p>
-        <Modal Title="@(_modalTitle)"
-               Visible="@_visible"
-               OnOk="@HandleOk"
-               OnCancel="@HandleCancel"
-               ConfirmLoading="@_confirmLoading" 
-               DestroyOnClose="true">
-            <Form Model="@Model">
-                <FormItem>
-                    <Input @bind-Value="@context.Title" />
-                </FormItem>
-            </Form>
-        </Modal>
-    </Authorized>
-</AuthorizeView>
+<h1>@loc["List"]</h1>
+<p>
+    <Button Type="@ButtonType.Primary" Icon="plus" OnClick="OnCreate">@loc["Add"]</Button>
+</p>
+<Modal Title="@(_modalTitle)"
+        Visible="@_visible"
+        OnOk="@HandleOk"
+        OnCancel="@HandleCancel"
+        ConfirmLoading="@_confirmLoading"
+        DestroyOnClose="true">
+    <Form Model="@Model">
+        <FormItem>
+            <Input @bind-Value="@context.Title" />
+        </FormItem>
+    </Form>
+</Modal>
 
 <p>
     @if (_genres.Count == 0)
     {
-    <Empty/>
+        <Empty />
     }
     else
     {
-    <AntList Bordered="true" DataSource="@_genres">
-        <ChildContent Context="item">
-            <ListItem Actions="hasPermission ? new RenderFragment[] { edit(item), delete(item) } : new RenderFragment[0]">
-                <ListItemMeta>
-                    <TitleTemplate>
-                        <Button Type="@ButtonType.Link">@item.Title</Button>
-                    </TitleTemplate>
-                </ListItemMeta>
-            </ListItem>
-        </ChildContent>
-    </AntList>
+        <AntList Bordered="true" 
+                 DataSource="@_genres">
+            <ChildContent Context="item">
+                <ListItem Actions="new RenderFragment[] { edit(item), delete(item) }">
+                    <ListItemMeta>
+                        <TitleTemplate>
+                            <Button Type="@ButtonType.Link">@item.Title</Button>
+                        </TitleTemplate>
+                    </ListItemMeta>
+                </ListItem>
+            </ChildContent>
+        </AntList>
     }
 </p>
 
 @code {
-    RenderFragment icon = @<Icon Type="exclamation-circle" Theme="outline"></Icon>;
+    RenderFragment icon =@<Icon Type="exclamation-circle" Theme="outline"></Icon>;
     Func<GenreModel, RenderFragment> edit;
     Func<GenreModel, RenderFragment> delete;
 
     private bool _visible = false;
     bool _confirmLoading = false;
-    private string _modalTitle = "Create";
+    private string _modalTitle = string.Empty;
     private List<GenreModel> _genres = new List<GenreModel>();
-    private bool hasPermission = false;
 
     GenreModel Model { get; set; } = new GenreModel();
-
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var genres = await repository.ListAllAsync();
         _genres.AddRange(genres.Select(i => mapper.Map<Genre, GenreModel>(i)));
 
-        var user = (await authenticationStateTask).User;
-        hasPermission = user.Identity.IsAuthenticated && user.IsInRole("Admin");
-        if (hasPermission)
-        {
-            edit = m => @<Button Type="@ButtonType.Link" OnClick="() => OnEdit(m)">edit</Button>;
-            delete = m => @<Button Type="@ButtonType.Link" OnClick="() => OnDelete(m)">delete</Button>;
-        }
+        edit = m => @<Button Type="@ButtonType.Link" OnClick="() => OnEdit(m)">@loc["Edit"]</Button>;
+        delete = m => @<Button Type="@ButtonType.Link" OnClick="() => OnDelete(m)">@loc["Delete"]</Button>;
     }
 
 
     private void OnCreate()
     {
         Model = new GenreModel();
-        _modalTitle = "Create";
+        _modalTitle = loc["Create"];
         _visible = true;
     }
 
     private void OnEdit(GenreModel genreModel)
     {
         Model = genreModel;
-        _modalTitle = "Edit";
+        _modalTitle = loc["Edit"];
         _visible = true;
     }
 
@@ -95,7 +86,7 @@
     {
         modalService.Confirm(new ConfirmOptions()
         {
-            Title = "Are you sure delete this genre?",
+            Title = loc["ConfirmDelete"],
             Icon = icon,
             OnOk = (_) => ConfirmDelete(genreModel),
             OkType = "danger",
@@ -104,13 +95,17 @@
 
     private async Task ConfirmDelete(GenreModel genreModel)
     {
-        var entity = await repository.GetByIdAsync(genreModel.Id);
+        var entity = await repository.FirstOrDefaultAsync(new GenreWithoutBooksSpecification(genreModel.Id));
         if (entity != null)
         {
             await repository.DeleteAsync(entity);
+            _genres.Remove(genreModel);
+            StateHasChanged();
         }
-        _genres.Remove(genreModel);
-        StateHasChanged();
+        else
+        {
+            await message.Warning(loc["CantDeleteGenre"].Value);
+        }
     }
 
     private async Task HandleOk(MouseEventArgs e)
@@ -142,7 +137,6 @@
 
     private void HandleCancel(MouseEventArgs e)
     {
-        Console.WriteLine("Clicked cancel button");
         _visible = false;
     }
 }
