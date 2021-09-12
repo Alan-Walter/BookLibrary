@@ -5,23 +5,24 @@
 @inject IBookGroupRepository repository
 @inject IMapper mapper
 @inject NavigationManager uri
+@inject IStringLocalizer<GroupsLocalization> loc
 
-<h1>Create group</h1>
+<h1>@loc["Create"]</h1>
 
 <Form Model="@model"
       OnFinish="OnFinish">
-    <FormItem>
+    <FormItem Label="@loc["Title"]">
         <Input @bind-Value="@context.Title" />
     </FormItem>
-    <FormItem>
-        <Select @bind-Value="@context.Parent" 
-                AllowClear="true" 
+    <FormItem Label="@loc["Parent"]">
+        <Select @bind-Value="@context.Parent"
+                AllowClear="true"
                 DataSource="groups"
-                LabelName="@nameof(BookGroupModel.Title)"/>
+                LabelName="@nameof(BookGroupModel.Title)" />
     </FormItem>
     <FormItem>
         <Button Type="@ButtonType.Primary" HtmlType="submit">
-            Submit
+            @loc["Save"]
         </Button>
     </FormItem>
 </Form>

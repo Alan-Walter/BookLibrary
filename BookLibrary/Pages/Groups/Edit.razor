@@ -5,28 +5,29 @@
 @inject IBookGroupRepository repository
 @inject IMapper mapper
 @inject NavigationManager uri
+@inject IStringLocalizer<GroupsLocalization> loc
 
-<h1>Edit group</h1>
+<h1>@loc["Edit"]</h1>
 
 <Form Model="@model"
       OnFinish="OnFinish">
-    <FormItem>
+    <FormItem Label="@loc["Title"]">
         <Input @bind-Value="@context.Title" />
     </FormItem>
-    <FormItem>
+    <FormItem  Label="@loc["Parent"]">
         <Select @bind-Value="@context.Parent"
                 AllowClear="true"
                 DataSource="groups"
                 LabelName="@nameof(BookGroupModel.Title)"
-                Disabled="CannotChangeParent"/>
+                Disabled="CannotChangeParent" />
         @if (CannotChangeParent)
         {
-            <span>Should be no children</span>
+            <span>@loc["CantEditParent"]</span>
         }
     </FormItem>
     <FormItem>
         <Button Type="@ButtonType.Primary" HtmlType="submit">
-            Submit
+            @loc["Save"]
         </Button>
     </FormItem>
 </Form>
