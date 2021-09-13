@@ -1,0 +1,154 @@
+﻿@page "/authors/list"
+@attribute [Authorize(Roles = "Admin")]
+
+@using AntDesign.TableModels
+
+@inject IAuthorRepository repository
+@inject IMapper mapper
+@inject ModalService modalService
+@inject IStringLocalizer<AuthorsLocalization> loc
+@inject MessageService message
+
+<h1>@loc["List"]</h1>
+<p>
+    <Button Type="@ButtonType.Primary"
+            Icon="plus"
+            OnClick="OnCreate">
+        @loc["Add"]
+    </Button>
+</p>
+<p>
+    <Table TItem="AuthorModel"
+           DataSource="_data"
+           @bind-PageIndex="_pageIndex"
+           @bind-PageSize="_pageSize"
+           Total="_total"
+           Loading="_loading"
+           OnChange="HandleTableChange"
+           RemoteDataSource>
+        <Column @bind-Field="@context.FirstName"
+                Sortable
+                Title="@loc["FirstName"]" />
+        <Column @bind-Field="@context.MiddleName"
+                Title="@loc["MiddleName"]" />
+        <Column @bind-Field="@context.LastName"
+                Sortable
+                Title="@loc["LastName"]" />
+        <ActionColumn>
+            <Space>
+                <SpaceItem><Button OnClick="() => Edit(context)">@loc["Edit"]</Button></SpaceItem>
+                <SpaceItem><Button Danger OnClick="() => Delete(context)">@loc["Delete"]</Button></SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</p>
+<Modal Title="@(_modalTitle)"
+       Visible="@_modalVisible"
+       OnOk="@HandleOk"
+       OnCancel="@HandleCancel"
+       ConfirmLoading="@_modalConfirmLoading"
+       DestroyOnClose="true">
+    <Form Model="@Model">
+        <FormItem Label="@loc["FirstName"]">
+            <Input @bind-Value="@context.FirstName" />
+        </FormItem>
+        <FormItem Label="@loc["MiddleName"]">
+            <Input @bind-Value="@context.MiddleName" />
+        </FormItem>
+        <FormItem Label="@loc["LastName"]">
+            <Input @bind-Value="@context.LastName" />
+        </FormItem>
+    </Form>
+</Modal>
+
+
+@code {
+    int _pageIndex = 1;
+    int _pageSize = 10;
+    int _total;
+    bool _loading = false;
+    string _modalTitle;
+    bool _modalVisible;
+    bool _modalConfirmLoading;
+
+    List<AuthorModel> _data = new List<AuthorModel>();
+
+    AuthorModel Model { get; set; }
+
+    async Task HandleTableChange(QueryModel<AuthorModel> queryModel)
+    {
+        _loading = true;
+
+        var sort = queryModel.SortModel.OrderBy(i => i.Priority).FirstOrDefault();
+
+        var authors = await repository.ListAsync(new AuthorTableSpecification(queryModel.PageIndex, queryModel.PageSize, sort?.FieldName, sort?.Sort));
+        _data = authors.Select(i => mapper.Map<Author, AuthorModel>(i)).ToList();
+        _total = await repository.CountAsync(new AuthorEmptySpecification());
+        _loading = false;
+    }
+
+    private void OnCreate()
+    {
+        Model = new AuthorModel();
+        _modalTitle = loc["Create"];
+        _modalVisible = true;
+    }
+
+    private async Task HandleOk(MouseEventArgs e)
+    {
+        _modalConfirmLoading = true;
+        if (Model.Id != Guid.Empty)
+        {
+            var entity = await repository.GetByIdAsync(Model.Id);
+            mapper.Map<AuthorModel, Author>(Model, entity);
+            await repository.UpdateAsync(entity);
+        }
+        else
+        {
+            var entity = mapper.Map<AuthorModel, Author>(Model);
+            await repository.AddAsync(entity);
+            _data.Add(Model);
+        }
+
+        _modalVisible = false;
+        _modalConfirmLoading = false;
+    }
+
+    private void HandleCancel(MouseEventArgs e)
+    {
+        _modalVisible = false;
+    }
+
+    private void Delete(AuthorModel authorModel)
+    {
+        modalService.Confirm(new ConfirmOptions()
+        {
+            Title = loc["ConfirmDelete"],
+            Icon =@<Icon Type="exclamation-circle" Theme="outline"></Icon>,
+            OnOk = (_) => ConfirmDelete(authorModel),
+            OkType = "danger",
+        });
+    }
+
+    private void Edit(AuthorModel authorModel)
+    {
+        _modalTitle = loc["Edit"];
+        Model = authorModel;
+        _modalVisible = true;
+    }
+
+    private async Task ConfirmDelete(AuthorModel authorModel)
+    {
+        var entity = await repository.FirstOrDefaultAsync(new AuthorWithoutBooksSpecification(authorModel.Id));
+        if (entity != null)
+        {
+            await repository.DeleteAsync(entity);
+            _data.Remove(authorModel);
+            StateHasChanged();
+        }
+        else
+        {
+            await message.Warning(loc["CantDeleteAuthor"].Value);
+        }
+    }
+} 

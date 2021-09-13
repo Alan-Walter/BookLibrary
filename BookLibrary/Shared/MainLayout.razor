@@ -26,6 +26,10 @@
                                 <Icon Type="container" Theme="outline" />
                                 <span>@loc["Genres"]</span>
                             </MenuItem>
+                            <MenuItem Key="5" RouterLink="@Url.ToAbsoluteUri("/authors/list").AbsoluteUri">
+                                <Icon Type="audit" Theme="outline" />
+                                <span>@loc["Authors"]</span>
+                            </MenuItem>
                         </MenuItemGroup>
                     </SubMenu>
                 </Authorized>

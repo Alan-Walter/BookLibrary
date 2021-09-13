@@ -120,6 +120,9 @@
   <data name="Administration" xml:space="preserve">
     <value>Administration</value>
   </data>
+  <data name="Authors" xml:space="preserve">
+    <value>Authors</value>
+  </data>
   <data name="Entities" xml:space="preserve">
     <value>Entities</value>
   </data>
