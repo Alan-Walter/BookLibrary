@@ -30,6 +30,10 @@
                                 <Icon Type="audit" Theme="outline" />
                                 <span>@loc["Authors"]</span>
                             </MenuItem>
+                            <MenuItem Key="6" RouterLink="@Url.ToAbsoluteUri("/books/list").AbsoluteUri">
+                                <Icon Type="book" Theme="outline" />
+                                <span>@loc["Books"]</span>
+                            </MenuItem>
                         </MenuItemGroup>
                     </SubMenu>
                 </Authorized>

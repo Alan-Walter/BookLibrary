@@ -11,5 +11,10 @@ namespace BookLibrary.Data.Models
 
         [Required]
         public string LastName { get; set; }
+
+        public override string ToString()
+        {
+            return string.Join(" ", FirstName, MiddleName, LastName);
+        }
     }
 }

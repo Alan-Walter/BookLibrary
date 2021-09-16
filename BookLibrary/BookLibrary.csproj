@@ -36,6 +36,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AuthorsLocalization.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\BooksLocalization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BooksLocalization.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\GenresLocalization.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -57,6 +62,10 @@
     <EmbeddedResource Update="Resources\AuthorsLocalization.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AuthorsLocalization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\BooksLocalization.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BooksLocalization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\GenresLocalization.resx">
       <Generator>ResXFileCodeGenerator</Generator>

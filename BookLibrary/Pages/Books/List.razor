@@ -1,0 +1,84 @@
+﻿@page "/books/list"
+@attribute [Authorize(Roles = "Admin")]
+
+@using AntDesign.TableModels
+
+@inject IBookRepository repository
+@inject IMapper mapper
+@inject ModalService modalService
+@inject IStringLocalizer<BooksLocalization> loc
+@inject MessageService message
+
+<h1>@loc["List"]</h1>
+<p>
+    <Button Type="@ButtonType.Primary" Icon="plus" OnClick="OnCreate">@loc["Add"]</Button>
+</p>
+<p>
+    <Table TItem="BookModel"
+           DataSource="_data"
+           @bind-PageIndex="_pageIndex"
+           @bind-PageSize="_pageSize"
+           Total="_total"
+           Loading="_loading"
+           OnChange="HandleTableChange"
+           RemoteDataSource>
+        <Column @bind-Field="@context.Title"
+                Title="@loc["Title"]" />
+        <Column @bind-Field="@context.Description"
+                Title="@loc["Description"]" />
+        <Column @bind-Field="@context.Authors"
+                Title="@loc["Authors"]">
+            @string.Join(", ", context.Authors)
+        </Column>
+        <Column @bind-Field="@context.CreationDate"
+                Title="@loc["CreationDate"]" />
+        <Column @bind-Field="@context.Group"
+                Title="@loc["Group"]">
+            @context.Group.ToString()
+        </Column>
+        <Column @bind-Field="@context.Genres"
+                Title="@loc["Genres"]">
+            @string.Join(", ", context.Genres)
+        </Column>
+        <ActionColumn>
+            <Space>
+                <SpaceItem><Button OnClick="() => Edit(context)">@loc["Edit"]</Button></SpaceItem>
+                <SpaceItem><Button Danger OnClick="() => Delete(context)">@loc["Delete"]</Button></SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</p>
+
+@code {
+    int _pageIndex = 1;
+    int _pageSize = 10;
+    int _total;
+    bool _loading = false;
+
+    List<BookModel> _data = new List<BookModel>();
+
+    async Task HandleTableChange(QueryModel<BookModel> queryModel)
+    {
+        _loading = true;
+
+        var books = await repository.ListAsync(new BookTableSpecification(queryModel.PageIndex, queryModel.PageSize));
+        _data = books.Select(i => mapper.Map<Book, BookModel>(i)).ToList();
+        _total = await repository.CountAsync(new BookEmptySpecification());
+        _loading = false;
+    }
+
+    public void OnCreate()
+    {
+
+    }
+
+    public void Edit(BookModel bookModel)
+    {
+
+    }
+
+    public void Delete(BookModel bookModel)
+    {
+
+    }
+}

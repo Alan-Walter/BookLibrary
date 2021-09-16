@@ -21,5 +21,10 @@ namespace BookLibrary.Data.Models
 
         public List<BookGroupModel> Childs { get; set; }
 
+        public override string ToString()
+        {
+            return Title;
+        }
+
     }
 }

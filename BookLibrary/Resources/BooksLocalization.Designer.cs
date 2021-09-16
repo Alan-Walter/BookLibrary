@@ -22,14 +22,14 @@ namespace BookLibrary.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class LayoutLocalization {
+    internal class BooksLocalization {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal LayoutLocalization() {
+        internal BooksLocalization() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace BookLibrary.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BookLibrary.Resources.LayoutLocalization", typeof(LayoutLocalization).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BookLibrary.Resources.BooksLocalization", typeof(BooksLocalization).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,15 +61,6 @@ namespace BookLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Administration.
-        /// </summary>
-        internal static string Administration {
-            get {
-                return ResourceManager.GetString("Administration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Authors.
         /// </summary>
         internal static string Authors {
@@ -79,20 +70,38 @@ namespace BookLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Books.
+        ///   Looks up a localized string similar to Creation Date.
         /// </summary>
-        internal static string Books {
+        internal static string CreationDate {
             get {
-                return ResourceManager.GetString("Books", resourceCulture);
+                return ResourceManager.GetString("CreationDate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entities.
+        ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string Entities {
+        internal static string Delete {
             get {
-                return ResourceManager.GetString("Entities", resourceCulture);
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        internal static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
         
@@ -106,47 +115,29 @@ namespace BookLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Groups.
+        ///   Looks up a localized string similar to Group.
         /// </summary>
-        internal static string Groups {
+        internal static string Group {
             get {
-                return ResourceManager.GetString("Groups", resourceCulture);
+                return ResourceManager.GetString("Group", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Home.
+        ///   Looks up a localized string similar to List of books.
         /// </summary>
-        internal static string Home {
+        internal static string List {
             get {
-                return ResourceManager.GetString("Home", resourceCulture);
+                return ResourceManager.GetString("List", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Library.
+        ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string Library {
+        internal static string Title {
             get {
-                return ResourceManager.GetString("Library", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Login.
-        /// </summary>
-        internal static string Login {
-            get {
-                return ResourceManager.GetString("Login", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Log out.
-        /// </summary>
-        internal static string Logout {
-            get {
-                return ResourceManager.GetString("Logout", resourceCulture);
+                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }
