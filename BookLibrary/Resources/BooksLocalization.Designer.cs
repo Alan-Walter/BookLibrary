@@ -61,6 +61,15 @@ namespace BookLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Book.
+        /// </summary>
+        internal static string AddBook {
+            get {
+                return ResourceManager.GetString("AddBook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authors.
         /// </summary>
         internal static string Authors {
@@ -120,6 +129,15 @@ namespace BookLibrary.Resources {
         internal static string Group {
             get {
                 return ResourceManager.GetString("Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        internal static string Image {
+            get {
+                return ResourceManager.GetString("Image", resourceCulture);
             }
         }
         

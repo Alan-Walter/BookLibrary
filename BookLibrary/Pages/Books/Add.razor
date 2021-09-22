@@ -5,6 +5,72 @@
 @inject IMapper mapper
 @inject IBookRepository repository
 @inject NavigationManager navigation
+@inject IStringLocalizer<BooksLocalization> loc 
+@inject IAuthorRepository authorRepository
+@inject IBookGroupRepository groupRepository
+@inject IGenreRepository genreRepository
 
-<h1>Add book</h1>
+<h1>@loc["AddBook"]</h1>
 
+<Form Model="@Model"
+      OnFinish="OnFinish">
+    <FormItem Label="@loc["Title"]">
+        <Input @bind-Value="@context.Title" />
+    </FormItem>
+    <FormItem Label="@loc["Description"]">
+        <TextArea @bind-Value="@context.Description" />
+    </FormItem>
+    <FormItem Label="@loc["Image"]">
+        <Input @bind-Value="@context.ImageUrl" />
+    </FormItem>
+    <FormItem Label="@loc["Group"]">
+        <Select @bind-Value="@context.Group"
+                AllowClear="false"
+                DataSource="_groups"
+                LabelName="@nameof(BookGroupModel.Title)" />
+    </FormItem>
+    <FormItem Label="@loc["Authors"]">
+        <Select @bind-Values="@context.Authors"
+                Mode="multiple"
+                AllowClear="false"
+                DataSource="_authors"
+                LabelName="@nameof(AuthorModel.FullName)" />
+    </FormItem>
+    <FormItem Label="@loc["Genres"]">
+        <Select @bind-Values="@context.Genres"
+                Mode="multiple"
+                AllowClear="false"
+                DataSource="_genres"
+                LabelName="@nameof(GenreModel.Title)" />
+    </FormItem>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            @loc["Save"]
+        </Button>
+    </FormItem>
+</Form>
+
+@code {
+    private BookModel Model { get; } = new BookModel();
+    private List<AuthorModel> _authors = new List<AuthorModel>();
+    private List<BookGroupModel> _groups = new List<BookGroupModel>();
+    private List<GenreModel> _genres = new List<GenreModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //  temporary solution
+        var authors = await authorRepository.ListAllAsync();
+        var groups = await groupRepository.ListAllAsync();
+        var genres = await genreRepository.ListAllAsync();
+        _groups.AddRange(groups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)));
+        _authors.AddRange(authors.Select(i => mapper.Map<Author, AuthorModel>(i)));
+        _genres.AddRange(genres.Select(i => mapper.Map<Genre, GenreModel>(i)));
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        var bookGroup = mapper.Map<BookModel, Book>(Model);
+        await repository.AddAsync(bookGroup);
+        navigation.NavigateTo("/books/list");
+    }
+} 

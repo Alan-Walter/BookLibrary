@@ -8,6 +8,7 @@
 @inject ModalService modalService
 @inject IStringLocalizer<BooksLocalization> loc
 @inject MessageService message
+@inject NavigationManager navigation
 
 <h1>@loc["List"]</h1>
 <p>
@@ -69,7 +70,7 @@
 
     public void OnCreate()
     {
-
+        navigation.NavigateTo("/books/add");
     }
 
     public void Edit(BookModel bookModel)

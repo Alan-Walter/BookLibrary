@@ -11,15 +11,19 @@ namespace BookLibrary.Data.Models
 
         public string Description { get; set; }
 
+        [DataType(DataType.ImageUrl)]
         public string ImageUrl { get; set; }
 
-        public ICollection<AuthorModel> Authors { get; set; }
+        [Required]
+        public IEnumerable<AuthorModel> Authors { get; set; }
 
-        public ICollection<GenreModel> Genres { get; set; }
+        [Required]
+        public IEnumerable<GenreModel> Genres { get; set; }
 
+        [Required]
         public BookGroupModel Group { get; set; }
 
-        public ICollection<BinaryFileModel> Files { get; set; }
+        public IEnumerable<BinaryFileModel> Files { get; set; }
 
         public DateTime CreationDate { get; set; }
     }

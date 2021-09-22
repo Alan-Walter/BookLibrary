@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddBook" xml:space="preserve">
+    <value>Add Book</value>
+  </data>
   <data name="Authors" xml:space="preserve">
     <value>Authors</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="Group" xml:space="preserve">
     <value>Group</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Image</value>
   </data>
   <data name="List" xml:space="preserve">
     <value>List of books</value>
