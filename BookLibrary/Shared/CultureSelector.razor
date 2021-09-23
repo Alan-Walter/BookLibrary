@@ -4,8 +4,8 @@
 <Popover
          ContentTemplate="@_content" 
          Title="Language"
-         Placement="@PlacementType.Bottom"
-         Trigger="@(new AntDesign.TriggerType[] { AntDesign.TriggerType.Click})">
+         Placement="@Placement.Bottom"
+         Trigger="@(new AntDesign.Trigger[] { AntDesign.Trigger.Click})">
     <Button Icon="global"
             Type="@ButtonType.Text">
         @Culture.Name

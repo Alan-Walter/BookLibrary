@@ -135,6 +135,9 @@
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="Files" xml:space="preserve">
+    <value>Files</value>
+  </data>
   <data name="Genres" xml:space="preserve">
     <value>Genres</value>
   </data>

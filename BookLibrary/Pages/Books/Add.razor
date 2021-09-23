@@ -43,6 +43,15 @@
                 DataSource="_genres"
                 LabelName="@nameof(GenreModel.Title)" />
     </FormItem>
+    <FormItem Label="@loc["Files"]">
+        <Upload FileList="_fileList"
+                Action="@navigation.ToAbsoluteUri("/api/BinaryFile").AbsoluteUri"
+                OnSingleCompleted="OnSingleCompletedAsync">
+            <Button Icon="upload">
+                <span>Upload</span>
+            </Button>
+        </Upload>
+    </FormItem>
     <FormItem>
         <Button Type="@ButtonType.Primary" HtmlType="submit">
             @loc["Save"]
@@ -55,6 +64,7 @@
     private List<AuthorModel> _authors = new List<AuthorModel>();
     private List<BookGroupModel> _groups = new List<BookGroupModel>();
     private List<GenreModel> _genres = new List<GenreModel>();
+    List<UploadFileItem> _fileList = new List<UploadFileItem>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,5 +82,13 @@
         var bookGroup = mapper.Map<BookModel, Book>(Model);
         await repository.AddAsync(bookGroup);
         navigation.NavigateTo("/books/list");
+    }
+
+    async Task OnSingleCompletedAsync(UploadInfo fileinfo)
+    {
+        if (fileinfo.File.State == UploadState.Success)
+        {
+            Console.WriteLine("Test");
+        }
     }
 } 

@@ -59,9 +59,6 @@ namespace BookLibrary
             services.AddScoped<IBinaryFileRepository, BinaryFileRepository>();
             services.AddScoped<IBookGroupRepository, BookGroupRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
-
-            services.AddScoped<IFileService, LocalFileService>();
-            services.AddScoped<ITemporaryFileService, TemporaryFileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
