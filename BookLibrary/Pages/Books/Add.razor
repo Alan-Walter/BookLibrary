@@ -44,9 +44,12 @@
                 LabelName="@nameof(GenreModel.Title)" />
     </FormItem>
     <FormItem Label="@loc["Files"]">
-        <Upload FileList="_fileList"
+        <Upload @bind-FileList="_fileList"
                 Action="@navigation.ToAbsoluteUri("/api/BinaryFile").AbsoluteUri"
-                OnSingleCompleted="OnSingleCompletedAsync">
+                OnSingleCompleted="OnSingleCompletedAsync"
+                Accept=".pdf,.fb2,.epub"
+                Name="files"
+                Multiple="true">
             <Button Icon="upload">
                 <span>Upload</span>
             </Button>
@@ -79,16 +82,22 @@
 
     private async Task OnFinish(EditContext editContext)
     {
+        Model.Files = _fileList.Select(i => mapper.Map<BinaryFileModel>(i)).ToList();
         var bookGroup = mapper.Map<BookModel, Book>(Model);
         await repository.AddAsync(bookGroup);
         navigation.NavigateTo("/books/list");
     }
 
-    async Task OnSingleCompletedAsync(UploadInfo fileinfo)
+    void OnSingleCompletedAsync(UploadInfo fileinfo)
     {
         if (fileinfo.File.State == UploadState.Success)
         {
-            Console.WriteLine("Test");
+            var result = fileinfo.File.GetResponse<ICollection<BinaryFileModel>>();
+            var model = result.FirstOrDefault(i => i.FileName == fileinfo.File.FileName);
+            if (model != null)
+            {
+                fileinfo.File = mapper.Map<BinaryFileModel, UploadFileItem>(model, fileinfo.File);
+            }
         }
     }
 } 

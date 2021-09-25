@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -27,9 +28,10 @@ namespace BookLibrary.Controllers
                     await file.CopyToAsync(stream);
                     result.Add(new BinaryFileModel
                     {
+                        FileName = file.FileName,
                         FilePath = filePath,
-                        FileName = file.Name,
-                        FileType = file.ContentType
+                        FileType = file.ContentType,
+                        Id = Guid.Empty
                     });
                 }
             }

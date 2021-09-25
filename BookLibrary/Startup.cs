@@ -31,9 +31,9 @@ namespace BookLibrary
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages().AddNewtonsoftJson();
             services.AddServerSideBlazor();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddDbContext<ApplicationContext>(options =>
             {
@@ -59,6 +59,7 @@ namespace BookLibrary
             services.AddScoped<IBinaryFileRepository, BinaryFileRepository>();
             services.AddScoped<IBookGroupRepository, BookGroupRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IFileService, LocalFileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
