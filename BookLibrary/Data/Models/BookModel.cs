@@ -1,10 +1,12 @@
-﻿using System;
+﻿using BookLibrary.Db.Models;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BookLibrary.Data.Models
 {
-    public class BookModel : BaseModel
+    public class BookModel : EntityModel<Book>
     {
         [Required]
         public string Title { get; set; }

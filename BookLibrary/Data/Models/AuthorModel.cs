@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BookLibrary.Db.Models;
+
+using System.ComponentModel.DataAnnotations;
 
 namespace BookLibrary.Data.Models
 {
-    public class AuthorModel : BaseModel
+    public class AuthorModel : EntityModel<Author>
     {
         [Required]
         public string FirstName { get; set; }

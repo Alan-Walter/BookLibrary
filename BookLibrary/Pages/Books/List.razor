@@ -9,6 +9,7 @@
 @inject IStringLocalizer<BooksLocalization> loc
 @inject MessageService message
 @inject NavigationManager navigation
+@inject IBinaryFileRepository fileRepository
 
 <h1>@loc["List"]</h1>
 <p>
@@ -75,11 +76,33 @@
 
     public void Edit(BookModel bookModel)
     {
-
+        navigation.NavigateTo($"/books/edit/{bookModel.Id}");
     }
 
     public void Delete(BookModel bookModel)
     {
+        modalService.Confirm(new ConfirmOptions()
+        {
+            Title = loc["ConfirmDelete"],
+            Icon =@<Icon Type="exclamation-circle" Theme="outline"></Icon>,
+            OnOk = (_) => ConfirmDelete(bookModel),
+            OkType = "danger",
+        });
+    }
 
+    private async Task ConfirmDelete(BookModel bookModel)
+    {
+        var entity = await repository.GetByIdAsync(bookModel.Id);
+        if (entity != null)
+        {
+            await fileRepository.RemoveBook(entity);
+            await repository.DeleteAsync(entity);
+            _data.Remove(bookModel);
+            StateHasChanged();
+        }
+        else
+        {
+            await message.Warning(loc["CantDeleteBook"].Value);
+        }
     }
 }

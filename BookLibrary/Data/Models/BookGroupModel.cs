@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BookLibrary.Db.Models;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BookLibrary.Data.Models
 {
-    public class BookGroupModel : BaseModel
+    public class BookGroupModel : EntityModel<BookGroup>
     {
         public string Uid => Id.ToString();
 

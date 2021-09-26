@@ -1,18 +1,20 @@
-﻿using System;
+﻿using BookLibrary.Db.Models;
+
+using System;
 using System.Collections.Generic;
 
 namespace BookLibrary.Data.Models
 {
-    public class BaseModel : IEquatable<BaseModel>
+    public class EntityModel<T> : IEquatable<EntityModel<T>> where T : IEntity
     {
         public Guid Id { get; set; }
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as BaseModel);
+            return Equals(obj as EntityModel<T>);
         }
 
-        public bool Equals(BaseModel other)
+        public bool Equals(EntityModel<T> other)
         {
             return other != null &&
                    Id.Equals(other.Id);
@@ -23,12 +25,12 @@ namespace BookLibrary.Data.Models
             return HashCode.Combine(Id);
         }
 
-        public static bool operator ==(BaseModel left, BaseModel right)
+        public static bool operator ==(EntityModel<T> left, EntityModel<T> right)
         {
-            return EqualityComparer<BaseModel>.Default.Equals(left, right);
+            return EqualityComparer<EntityModel<T>>.Default.Equals(left, right);
         }
 
-        public static bool operator !=(BaseModel left, BaseModel right)
+        public static bool operator !=(EntityModel<T> left, EntityModel<T> right)
         {
             return !(left == right);
         }

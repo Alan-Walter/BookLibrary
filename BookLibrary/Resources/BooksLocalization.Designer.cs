@@ -61,6 +61,15 @@ namespace BookLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        internal static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Book.
         /// </summary>
         internal static string AddBook {
@@ -75,6 +84,24 @@ namespace BookLibrary.Resources {
         internal static string Authors {
             get {
                 return ResourceManager.GetString("Authors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t delete this book.
+        /// </summary>
+        internal static string CantDeleteBook {
+            get {
+                return ResourceManager.GetString("CantDeleteBook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure delete this book ?.
+        /// </summary>
+        internal static string ConfirmDelete {
+            get {
+                return ResourceManager.GetString("ConfirmDelete", resourceCulture);
             }
         }
         
@@ -111,6 +138,15 @@ namespace BookLibrary.Resources {
         internal static string Edit {
             get {
                 return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit book.
+        /// </summary>
+        internal static string EditBook {
+            get {
+                return ResourceManager.GetString("EditBook", resourceCulture);
             }
         }
         

@@ -11,16 +11,24 @@ namespace BookLibrary.Data
     {
         public AutoMapperProfile()
         {
+            // entities -> models
             CreateMap<BookGroup, BookGroupModel>();
-            CreateMap<BookGroupModel, BookGroup>().ForMember(i => i.Parent, opt => opt.Ignore());
-            CreateMap<Author, AuthorModel>().ReverseMap();
-            CreateMap<Genre, GenreModel>().ReverseMap();
-            CreateMap<Book, BookModel>().ReverseMap();
-            CreateMap<UploadFileItem, BinaryFileModel>()
+            CreateMap<BookGroupModel, BookGroup>()
+                .ForMember(i => i.Parent, opt => opt.Ignore());
+            CreateMap<Author, AuthorModel>()
+                .ReverseMap();
+            CreateMap<Genre, GenreModel>()
+                .ReverseMap();
+            CreateMap<Book, BookModel>()
+                .ReverseMap();
+            CreateMap<BinaryFile, BinaryFileModel>()
+                .ReverseMap();
+
+            CreateMap<BinaryFileModel, UploadFileItem>()
                 .ForMember(dest => dest.FileName, opt => opt.MapFrom(i => i.FileName))
-                .ForMember(dest => dest.FilePath, opt => opt.MapFrom(i => i.Url))
-                .ForMember(dest => dest.FileType, opt => opt.MapFrom(i => i.Type))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(i => i.FileType))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(i => i.Id))
+                .AfterMap((src, dst) => dst.Url = $"/api/BinaryFile/{src.Id}")
                 .ReverseMap();
         }
     }

@@ -1,0 +1,10 @@
+﻿@page "/books/edit/{id:guid}"
+
+@attribute [Authorize(Roles = "Admin")]
+
+<BookEdit BookId="Id" />
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+}

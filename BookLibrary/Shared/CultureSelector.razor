@@ -1,9 +1,10 @@
 ﻿@using System.Globalization
 @inject NavigationManager Nav
+@inject IStringLocalizer<LayoutLocalization> loc
 
 <Popover
          ContentTemplate="@_content" 
-         Title="Language"
+         Title="@loc["Language"]"
          Placement="@Placement.Bottom"
          Trigger="@(new AntDesign.Trigger[] { AntDesign.Trigger.Click})">
     <Button Icon="global"

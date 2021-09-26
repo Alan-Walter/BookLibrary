@@ -1,0 +1,138 @@
+﻿@inject IMapper mapper
+@inject IBookRepository repository
+@inject NavigationManager navigation
+@inject IStringLocalizer<BooksLocalization> loc
+@inject IAuthorRepository authorRepository
+@inject IBookGroupRepository groupRepository
+@inject IGenreRepository genreRepository
+@inject IBinaryFileRepository fileRepository
+
+<h1>@(BookId == Guid.Empty ? loc["AddBook"] : loc["EditBook"])</h1>
+
+<Form Model="@Model"
+      OnFinish="OnFinish">
+    <FormItem Label="@loc["Title"]">
+        <Input @bind-Value="@context.Title" />
+    </FormItem>
+    <FormItem Label="@loc["Description"]">
+        <TextArea @bind-Value="@context.Description" />
+    </FormItem>
+    <FormItem Label="@loc["Image"]">
+        <Input @bind-Value="@context.ImageUrl" />
+    </FormItem>
+    <FormItem Label="@loc["Group"]">
+        <Select @bind-Value="@context.Group"
+                AllowClear="false"
+                DataSource="_groups"
+                LabelName="@nameof(BookGroupModel.Title)" />
+    </FormItem>
+    <FormItem Label="@loc["Authors"]">
+        <Select @bind-Values="@context.Authors"
+                Mode="multiple"
+                AllowClear="false"
+                DataSource="_authors"
+                LabelName="@nameof(AuthorModel.FullName)" />
+    </FormItem>
+    <FormItem Label="@loc["Genres"]">
+        <Select @bind-Values="@context.Genres"
+                Mode="multiple"
+                AllowClear="false"
+                DataSource="_genres"
+                LabelName="@nameof(GenreModel.Title)" />
+    </FormItem>
+    <FormItem Label="@loc["Files"]">
+        <Upload @bind-FileList="_fileList"
+                Action="@navigation.ToAbsoluteUri("/api/BinaryFile").AbsoluteUri"
+                OnSingleCompleted="OnSingleCompletedAsync"
+                Accept=".pdf,.fb2,.epub"
+                Name="files"
+                Multiple="true">
+            <Button Icon="upload">
+                <span>Upload</span>
+            </Button>
+        </Upload>
+    </FormItem>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            @loc["Save"]
+        </Button>
+    </FormItem>
+</Form>
+
+@code {
+    private BookModel Model { get; set; } = new BookModel();
+    private List<AuthorModel> _authors = new List<AuthorModel>();
+    private List<BookGroupModel> _groups = new List<BookGroupModel>();
+    private List<GenreModel> _genres = new List<GenreModel>();
+    List<UploadFileItem> _fileList = new List<UploadFileItem>();
+
+    [Parameter]
+    public Guid BookId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (BookId != Guid.Empty)
+        {
+            var book = await repository.FirstOrDefaultAsync(new BookSpecification(BookId));
+            Model = mapper.Map<BookModel>(book);
+            _fileList.AddRange(Model.Files.Select(i => mapper.Map<UploadFileItem>(i)).ToList());
+        }
+
+        //  temporary solution
+        var authors = await authorRepository.ListAllAsync();
+        var groups = await groupRepository.ListAllAsync();
+        var genres = await genreRepository.ListAllAsync();
+        _groups.AddRange(groups.Select(i => mapper.Map<BookGroup, BookGroupModel>(i)));
+        _authors.AddRange(authors.Select(i => mapper.Map<Author, AuthorModel>(i)));
+        _genres.AddRange(genres.Select(i => mapper.Map<Genre, GenreModel>(i)));
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        Model.Files = _fileList.Where(i => i.State == UploadState.Success)
+            .Select(i => mapper.Map<BinaryFileModel>(i))
+            .ToList();
+
+        var entity = new Book();
+        if (BookId != Guid.Empty)
+        {
+            entity = await repository.GetByIdAsync(BookId);
+        }
+        mapper.Map<BookModel, Book>(Model, entity);
+
+        var files = await fileRepository.ListAsync(new ListSpecification<BinaryFile>(Model.Files.Select(i => i.Id).ToList()));
+        entity.Files = new List<BinaryFile>(files);
+
+        var genres = await genreRepository.ListAsync(new ListSpecification<Genre>(Model.Genres.Select(i => i.Id).ToList()));
+        entity.Genres = new List<Genre>(genres);
+
+        var authors = await authorRepository.ListAsync(new ListSpecification<Author>(Model.Authors.Select(i => i.Id).ToList()));
+        entity.Authors = new List<Author>(authors);
+
+        entity.Group = await groupRepository.GetByIdAsync(Model.Group.Id);
+
+        if (entity.Id != Guid.Empty)
+        {
+            await repository.UpdateAsync(entity);
+        }
+        else
+        {
+            await repository.AddAsync(entity);
+        }
+
+        navigation.NavigateTo("/books/list");
+    }
+
+    void OnSingleCompletedAsync(UploadInfo fileinfo)
+    {
+        if (fileinfo.File.State == UploadState.Success)
+        {
+            var result = fileinfo.File.GetResponse<ICollection<BinaryFileModel>>();
+            var model = result.FirstOrDefault(i => i.FileName == fileinfo.File.FileName);
+            if (model != null)
+            {
+                fileinfo.File = mapper.Map<BinaryFileModel, UploadFileItem>(model, fileinfo.File);
+            }
+        }
+    }
+} 

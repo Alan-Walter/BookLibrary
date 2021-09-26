@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using BookLibrary.Db.Models;
+
+using System;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BookLibrary.Core.Services
@@ -7,8 +11,10 @@ namespace BookLibrary.Core.Services
     {
         long MaxFileSize { get; }
 
-        bool CanSave(string fileName, string type);
+        bool CanSave(string type, long fileSize);
 
-        string SaveFile(string tempFileName, string fileName);
+        Task<string> SaveFileAsync(Func<Stream, CancellationToken, Task> saveFunc, Guid fileId);
+
+        Stream OpenFile(string path);
     }
 }

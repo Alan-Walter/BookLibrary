@@ -1,46 +1,46 @@
 ﻿using BookLibrary.Core.Services;
 
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
-using System.Collections.Generic;
+using System;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BookLibrary.Data.Services
 {
     public class LocalFileService : IFileService
     {
-        readonly IWebHostEnvironment webHostEnvironment;
+        const long maxFileSize = 100 * 1024 * 1024;
 
-        const string BookDirectory = "Books";
+        private static readonly string[] allowedFiles = new[] { "application/pdf", "application/octet-stream" };
 
-        const long maxFileSize = 10 * 1024 * 1024;
-
-        private static readonly Dictionary<string, string> allowedFiles = new()
-        {
-            { ".pdf", "application/pdf" },
-            { ".fb2", string.Empty }
-        };
+        private readonly string _filePath;
 
         public long MaxFileSize => maxFileSize;
 
-        public LocalFileService(IWebHostEnvironment webHostEnvironment)
+        public LocalFileService(IConfiguration configuration)
         {
-            this.webHostEnvironment = webHostEnvironment;
+            _filePath = configuration.GetValue<string>("FilePath");
         }
 
-        public bool CanSave(string fileName, string type)
+        public bool CanSave(string type, long fileSize)
         {
-            var fileExt = Path.GetExtension(fileName);
-            return allowedFiles.TryGetValue(fileExt, out var mimeType) && mimeType == type;
+            return !string.IsNullOrEmpty(_filePath) && fileSize < MaxFileSize && allowedFiles.Contains(type);
         }
 
-        public string SaveFile(string tempFileName, string fileName)
+        public async Task<string> SaveFileAsync(Func<Stream, CancellationToken, Task> saveFunc, Guid fileId)
         {
-            var dirPath = Path.Combine(webHostEnvironment.ContentRootPath, BookDirectory);
-            var file = Path.GetRandomFileName() + "_" + fileName;
-            var path = Path.Combine(dirPath, file);
-            File.Copy(tempFileName, path);
+            var path = Path.Combine(_filePath, fileId.ToString());
+            using var stream = File.Create(path);
+            await saveFunc(stream, CancellationToken.None);
             return path;
+        }
+
+        public Stream OpenFile(string path)
+        {
+            return File.OpenRead(path);
         }
     }
 }

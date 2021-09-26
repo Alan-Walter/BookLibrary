@@ -1,6 +1,8 @@
-﻿namespace BookLibrary.Data.Models
+﻿using BookLibrary.Db.Models;
+
+namespace BookLibrary.Data.Models
 {
-    public class GenreModel : BaseModel
+    public class GenreModel : EntityModel<Genre>
     {
         public string Title { get; set; }
 

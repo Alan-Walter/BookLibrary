@@ -1,11 +1,11 @@
-﻿namespace BookLibrary.Data.Models
+﻿using BookLibrary.Db.Models;
+
+namespace BookLibrary.Data.Models
 {
-    public class BinaryFileModel : BaseModel
+    public class BinaryFileModel : EntityModel<BinaryFile>
     {
         public string FileName { get; set; }
 
         public string FileType { get; set; }
-
-        public string FilePath { get; set; }
     }
 }
