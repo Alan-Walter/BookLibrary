@@ -1,3 +1,156 @@
 ﻿@page "/"
 
-<Empty />
+@inject IMapper mapper
+@inject IBookRepository repository
+@inject IAuthorRepository authorRepository
+@inject IBookGroupRepository groupRepository
+@inject IGenreRepository genreRepository
+@inject IStringLocalizer<BooksLocalization> loc
+@inject NavigationManager navigation
+
+<h1>@loc["Books"]</h1>
+
+<Form Model="@Model"
+      OnFinish="OnFinish">
+    <Row Gutter="16">
+        <GridCol Span="8">
+            <FormItem Label="@loc["Title"]">
+                <Input @bind-Value="@context.Title"
+                       AllowClear="true" />
+            </FormItem>
+        </GridCol>
+        <GridCol Span="8">
+            <FormItem Label="@loc["Authors"]">
+                <Select @bind-Values="@context.Authors"
+                        Mode="multiple"
+                        AllowClear="true"
+                        DataSource="_authors"
+                        LabelName="@nameof(AuthorModel.FullName)" />
+            </FormItem>
+        </GridCol>
+    </Row>
+    <Row Gutter="16">
+        <GridCol Span="8">
+            <FormItem Label="@loc["Genres"]">
+                <Select @bind-Values="@context.Genres"
+                        Mode="multiple"
+                        AllowClear="true"
+                        DataSource="_genres"
+                        LabelName="@nameof(GenreModel.Title)" />
+            </FormItem>
+        </GridCol>
+        <GridCol Span="8">
+            <FormItem Label="@loc["Group"]">
+                <Select @bind-Value="@context.Group"
+                        AllowClear="true"
+                        DataSource="_groups"
+                        LabelName="@nameof(BookGroup.Title)" />
+            </FormItem>
+        </GridCol>
+    </Row>
+    <FormItem>
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            @loc["Search"]
+        </Button>
+    </FormItem>
+</Form>
+
+@if (_books.Count == 0)
+{
+    <Empty />
+}
+else
+{
+    <div class="book-card-list">
+        @foreach (var book in _books)
+        {
+            <div class="book-card-container">
+                <Card Hoverable
+                      Class="book-card"
+                      Cover="coverTemplate(book)"
+                      Actions="@(new[]
+                             {
+                                actionMore(book)
+                             })">
+                    <CardMeta Title="@book.Title" Description="@book.Description" />
+                    <div class="book-card-tags">
+                        @foreach (var author in book.Authors)
+                        {
+                            <Tag PresetColor="@PresetColor.GeekBlue">@author.ToString()</Tag>
+                        }
+                        @foreach (var genre in book.Genres)
+                        {
+                            <Tag PresetColor="@PresetColor.Magenta">@genre.Title</Tag>
+                        }
+                        <Tag PresetColor="@PresetColor.Gold">@book.Group.Title</Tag>
+                    </div>
+                </Card>
+            </div>
+        }
+    </div>
+    <div class="book-card-list-pagination">
+        <Pagination Current="_page" PageSize="_count" Total="_total" OnChange="OnPageChange" OnShowSizeChange="OnShowSizeChange"></Pagination>
+    </div>
+}
+
+@code {
+    private int _count = 15;
+    private int _page = 1;
+    private int _total = 0;
+
+    List<BookModel> _books = new List<BookModel>();
+    List<AuthorModel> _authors = new List<AuthorModel>();
+    List<GenreModel> _genres = new List<GenreModel>();
+    List<BookGroupModel> _groups = new List<BookGroupModel>();
+
+    BookSearchModel Model { get; } = new BookSearchModel();
+
+    private RenderFragment<BookModel> coverTemplate = b => string.IsNullOrEmpty(b.ImageUrl) ?@<Empty /> : @<img alt="image" src="@b.ImageUrl" />;
+    private RenderFragment actionMore(BookModel model) =>@<Icon Type="book" OnClick="() => MoveToBook(model)" />;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authors = await authorRepository.ListAllAsync();
+        _authors.AddRange(authors.Select(i => mapper.Map<AuthorModel>(i)).ToList());
+        var genres = await genreRepository.ListAllAsync();
+        _genres.AddRange(genres.Select(i => mapper.Map<GenreModel>(i)).ToList());
+        var groups = await groupRepository.ListAllAsync();
+        _groups.AddRange(groups.Select(i => mapper.Map<BookGroupModel>(i)).ToList());
+        await LoadBooksAsync();
+    }
+
+    private async Task OnPageChange(PaginationEventArgs e)
+    {
+        await LoadBooksAsync();
+    }
+
+    private async Task OnShowSizeChange(PaginationEventArgs args)
+    {
+        await LoadBooksAsync();
+    }
+
+    private async Task LoadBooksAsync()
+    {
+        var books = await repository.ListAsync(new BookFilterSpecification(
+            _page, 
+            _count, 
+            Model.Authors?.Select(i => i.Id).ToList(), 
+            Model.Genres?.Select(i => i.Id).ToList(), 
+            Model.Group?.Id, 
+            Model.Title));
+        _books = books.Select(i => mapper.Map<Book, BookModel>(i)).ToList();
+        _total = await repository.CountAsync(new BookEmptySpecification());
+    }
+
+    private void MoveToBook(BookModel bookModel)
+    {
+        navigation.NavigateTo($"/books/view/{bookModel.Id}");
+    }
+
+    private async Task OnFinish(EditContext editContext)
+    {
+        _page = 1;
+        _count = 15;
+        await LoadBooksAsync();
+    }
+}

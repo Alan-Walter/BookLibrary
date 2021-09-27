@@ -86,3 +86,33 @@ a, .btn-link {
 .tree-button-group {
     padding-left: 8px;
 }
+
+.book-card-list {
+    display: flex;
+    padding: 16px 0;
+    flex-wrap: wrap;
+}
+
+.book-card-list-pagination {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.book-card {
+    width: 240px;
+}
+
+.book-card-container {
+    padding-right: 16px;
+    padding-bottom: 16px;
+}
+
+.book-card-tags {
+    padding: 4px 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.book-card-tags > span {
+    margin-bottom: 2px;
+}
