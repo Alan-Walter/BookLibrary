@@ -13,13 +13,13 @@
 <Form Model="@Model"
       OnFinish="OnFinish">
     <Row Gutter="16">
-        <GridCol Span="8">
+        <GridCol Span="12">
             <FormItem Label="@loc["Title"]">
                 <Input @bind-Value="@context.Title"
                        AllowClear="true" />
             </FormItem>
         </GridCol>
-        <GridCol Span="8">
+        <GridCol Span="12">
             <FormItem Label="@loc["Authors"]">
                 <Select @bind-Values="@context.Authors"
                         Mode="multiple"
@@ -30,7 +30,7 @@
         </GridCol>
     </Row>
     <Row Gutter="16">
-        <GridCol Span="8">
+        <GridCol Span="12">
             <FormItem Label="@loc["Genres"]">
                 <Select @bind-Values="@context.Genres"
                         Mode="multiple"
@@ -39,7 +39,7 @@
                         LabelName="@nameof(GenreModel.Title)" />
             </FormItem>
         </GridCol>
-        <GridCol Span="8">
+        <GridCol Span="12">
             <FormItem Label="@loc["Group"]">
                 <Select @bind-Value="@context.Group"
                         AllowClear="true"

@@ -1,0 +1,61 @@
+﻿@page "/books/view/{id:guid}"
+
+@inject IMapper mapper
+@inject IBookRepository repository
+@inject IStringLocalizer<BooksLocalization> loc
+
+@if (Model == null)
+{
+<Spin size="large" />
+}
+else
+{
+<h1>@Model.Title</h1>
+<Row>
+    <GridCol Span="6" Class="book-column-image">
+        <div>
+            @if (string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <Empty />
+            }
+            else
+            {
+                <img class="book-image" src="@Model.ImageUrl" />
+            }
+        </div>
+        @if (_fileList.Any())
+        {
+            <div class="book-file-upload">
+                <Upload @bind-FileList="_fileList"
+                        Disabled="true"
+                        ShowButton="false">
+                </Upload>
+            </div>
+        }
+    </GridCol>
+    <GridCol Span="18" Class="book-column-description">
+        <Descriptions Title="@loc["BookInfo"]" Bordered>
+            <DescriptionsItem Title="@loc["Description"]">@Model.Description</DescriptionsItem>
+            <DescriptionsItem Title="@loc["Authors"]">@string.Join(", ", Model.Authors)</DescriptionsItem>
+            <DescriptionsItem Title="@loc["Genres"]">@string.Join(", ", Model.Genres)</DescriptionsItem>
+            <DescriptionsItem Title="@loc["Group"]">@Model.Group.Title</DescriptionsItem>
+            <DescriptionsItem Title="@loc["CreationDate"]">@Model.CreationDate</DescriptionsItem>
+        </Descriptions>
+    </GridCol>
+</Row>
+}
+
+@code {
+    List<UploadFileItem> _fileList = new List<UploadFileItem>();
+    BookModel Model { get; set; }
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var book = await repository.FirstOrDefaultAsync(new BookSpecification(Id));
+        Model = mapper.Map<BookModel>(book);
+        _fileList.AddRange(Model.Files.Select(i => mapper.Map<UploadFileItem>(i)).ToList());
+    }
+}

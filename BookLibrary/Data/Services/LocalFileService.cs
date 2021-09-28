@@ -17,17 +17,19 @@ namespace BookLibrary.Data.Services
         private static readonly string[] allowedFiles = new[] { "application/pdf", "application/octet-stream" };
 
         private readonly string _filePath;
+        private readonly bool _canSave;
 
         public long MaxFileSize => maxFileSize;
 
         public LocalFileService(IConfiguration configuration)
         {
             _filePath = configuration.GetValue<string>("FilePath");
+            _canSave = !string.IsNullOrEmpty(_filePath) && Directory.Exists(_filePath);
         }
 
         public bool CanSave(string type, long fileSize)
         {
-            return !string.IsNullOrEmpty(_filePath) && fileSize < MaxFileSize && allowedFiles.Contains(type);
+            return _canSave && fileSize < MaxFileSize && allowedFiles.Contains(type);
         }
 
         public async Task<string> SaveFileAsync(Func<Stream, CancellationToken, Task> saveFunc, Guid fileId)

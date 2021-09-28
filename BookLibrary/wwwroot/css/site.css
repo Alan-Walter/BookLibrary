@@ -116,3 +116,19 @@ a, .btn-link {
 .book-card-tags > span {
     margin-bottom: 2px;
 }
+
+.book-image {
+    width: 100%;
+}
+
+.book-file-upload .ant-upload-list-item-card-actions-btn {
+    display: none;
+}
+
+.book-column-image {
+    padding-right: 8px;
+}
+
+.book-column-description {
+    padding-left: 8px;
+}

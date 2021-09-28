@@ -88,6 +88,15 @@ namespace BookLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About book.
+        /// </summary>
+        internal static string BookInfo {
+            get {
+                return ResourceManager.GetString("BookInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Books.
         /// </summary>
         internal static string Books {

@@ -126,6 +126,9 @@
   <data name="Authors" xml:space="preserve">
     <value>Authors</value>
   </data>
+  <data name="BookInfo" xml:space="preserve">
+    <value>About book</value>
+  </data>
   <data name="Books" xml:space="preserve">
     <value>Books</value>
   </data>
